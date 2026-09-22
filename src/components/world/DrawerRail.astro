@@ -1,4 +1,5 @@
 ---
+import { url } from '@/lib/url';
 import { pieces } from '@/data/pieces';
 
 const drawers = [
@@ -47,14 +48,14 @@ const items = drawers.map((drawer) => ({
 
           <div class="absolute inset-x-0 top-full z-30 hidden flex-col gap-2 border border-accent bg-deep p-3.5 shadow-[0_18px_40px_rgba(20,22,18,0.3)] group-data-[open]/drawer:flex">
             {drawer.pieces.map((piece) => (
-              <a href="/catalog" class="flex items-baseline justify-between gap-3 text-sm text-ground/90 transition-colors hover:text-accent-l">
+              <a href={url('/catalog')} class="flex items-baseline justify-between gap-3 text-sm text-ground/90 transition-colors hover:text-accent-l">
                 <span>{piece.name}</span>
                 <span class="font-data text-[0.65rem] tracking-[0.12em] text-ground/50" dir="ltr">
                   {piece.no}
                 </span>
               </a>
             ))}
-            <a href="/catalog" class="border-t border-ground/15 pt-2 text-sm font-medium text-ground transition-colors hover:text-accent-l">
+            <a href={url('/catalog')} class="border-t border-ground/15 pt-2 text-sm font-medium text-ground transition-colors hover:text-accent-l">
               كل الأدراج
             </a>
           </div>
