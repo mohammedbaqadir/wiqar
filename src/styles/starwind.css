@@ -10,21 +10,31 @@
    border-hairline, font-display, font-reading, font-data…
    ───────────────────────────────────────────────────────────── */
 @theme inline {
-  --color-ground: var(--wq-ground);
-  --color-ground-2: var(--wq-ground-2);
-  --color-ground-3: var(--wq-ground-3);
-  --color-paper: var(--wq-paper);
+  /* the room */
+  --color-room: var(--wq-room);
+  --color-room-2: var(--wq-room-2);
+  --color-room-3: var(--wq-room-3);
+  --color-room-ink: var(--wq-room-ink);
+  --color-room-ink-2: var(--wq-room-ink-2);
+  --color-room-ink-3: var(--wq-room-ink-3);
+  /* the exhibits (stay lit at night) */
+  --color-exhibit: var(--wq-exhibit);
+  --color-exhibit-2: var(--wq-exhibit-2);
   --color-ink: var(--wq-ink);
   --color-ink-2: var(--wq-ink-2);
   --color-ink-3: var(--wq-ink-3);
+  /* the case interiors and gallery bands */
+  --color-deep: var(--wq-deep);
+  --color-deep-ink: var(--wq-deep-ink);
+  --color-deep-ink-2: var(--wq-deep-ink-2);
+  /* accent + the one red */
   --color-accent: var(--wq-accent);
   --color-accent-d: var(--wq-accent-d);
   --color-accent-l: var(--wq-accent-l);
-  --color-slate: var(--wq-slate);
-  --color-deep: var(--wq-deep);
   --color-signal: var(--wq-signal);
+  /* rules */
   --color-hairline: var(--wq-hairline);
-  --color-hairline-strong: var(--wq-hairline-strong);
+  --color-hairline-ink: var(--wq-hairline-ink);
 
   --font-display: var(--wq-font-display);
   --font-reading: var(--wq-font-reading);

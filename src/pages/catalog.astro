@@ -9,20 +9,18 @@ import { pieces } from '@/data/pieces';
 <Base title="الفهرس — وقار">
   <SiteHeader />
   <main>
-    <header class="border-b border-hairline-strong bg-deep py-12">
+    <header class="border-b wq-edge wq-surface-deep py-12">
       <div class="mx-auto max-w-6xl space-y-3 px-5 lg:px-8">
         <p class="font-data text-[0.8rem] tracking-[0.18em] text-accent-l">فهرس المقتنيات</p>
         <h1
-          class="relative pb-4 font-display text-4xl leading-tight text-ground after:absolute after:bottom-0 after:start-0 after:h-[3px] after:w-14 after:bg-accent lg:text-6xl"
+          class="relative pb-4 font-display text-4xl leading-tight wq-ink-deep after:absolute after:bottom-0 after:start-0 after:h-[3px] after:w-14 after:bg-accent lg:text-6xl"
         >
           {pieces.length} قطع مختارة
         </h1>
       </div>
     </header>
 
-    <div class="pt-10">
-      <AccessionWall pieces={pieces} title="كل المقتنيات" />
-    </div>
+    <AccessionWall pieces={pieces} title="كل المقتنيات" />
   </main>
   <SiteFooter />
 </Base>

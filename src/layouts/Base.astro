@@ -1,7 +1,8 @@
 ---
-import { url } from '@/lib/url';
 import '@/styles/starwind.css';
 import '@/styles/world.css';
+import { palettes, defaultPalette } from '@/data/palettes';
+import { paletteVars } from '@/lib/palette-css';
 
 interface Props {
   title?: string;
@@ -12,6 +13,18 @@ const {
   title = 'وقار — عرض تصميمي',
   description = 'عرض تصميمي لعالم وقار: قاعة المقتنيات — عرض ساكن لا يعمل كمتجر.',
 } = Astro.props;
+
+/* Palette CSS is generated from the catalogue: one source of truth. */
+const paletteCss = [
+  `:root{${paletteVars(defaultPalette.day)}}`,
+  `html.dark{${paletteVars(defaultPalette.night)}}`,
+  ...palettes.map((palette) => `html[data-palette='${palette.id}']{${paletteVars(palette.day)}}`),
+  ...palettes.map(
+    (palette) => `html.dark[data-palette='${palette.id}']{${paletteVars(palette.night)}}`
+  ),
+].join('\n');
+
+const paletteIds = palettes.map((palette) => palette.id).join(',');
 ---
 
 <!doctype html>
@@ -21,21 +34,26 @@ const {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <link rel="icon" href={url('/favicon.svg')} type="image/svg+xml" />
-    <script is:inline>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <style is:inline set:html={paletteCss} />
+    <script is:inline define:vars={{ paletteIds }}>
       (function () {
+        var params = new URLSearchParams(location.search);
+        var wantsDark = params.get('theme');
+        var wantsPalette = params.get('palette');
         try {
-          if (localStorage.getItem('wq-theme') === 'dark') {
+          if (wantsDark === 'dark' || (wantsDark !== 'light' && localStorage.getItem('wq-theme') === 'dark')) {
             document.documentElement.classList.add('dark');
           }
-          if (localStorage.getItem('wq-palette') === 'olive') {
-            document.documentElement.setAttribute('data-palette', 'olive');
+          var palette = wantsPalette || localStorage.getItem('wq-palette');
+          if (palette && paletteIds.split(',').indexOf(palette) > -1) {
+            document.documentElement.setAttribute('data-palette', palette);
           }
         } catch (e) {}
       })();
     </script>
   </head>
-  <body class="group/page min-h-dvh font-sans antialiased">
+  <body class="group/page min-h-dvh wq-surface-room font-sans wq-ink-room antialiased">
     <slot />
   </body>
 </html>

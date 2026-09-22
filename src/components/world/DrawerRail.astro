@@ -1,6 +1,6 @@
 ---
-import { url } from '@/lib/url';
 import { pieces } from '@/data/pieces';
+import { url } from '@/lib/url';
 
 const drawers = [
   { label: 'خزف', kinds: ['cup', 'bowl'] },
@@ -17,17 +17,14 @@ const items = drawers.map((drawer) => ({
 ---
 
 <nav class="relative z-20 mx-auto max-w-6xl px-5 pb-10 lg:px-8" aria-label="أدراج القاعة">
-  <div class="flex overflow-x-auto border border-hairline [scrollbar-width:none]">
+  <div class="flex overflow-x-auto border wq-edge [scrollbar-width:none]">
     {
       items.map((drawer) => (
-        <div
-          class="group/drawer relative min-w-40 flex-1 border-hairline [&+&]:border-s"
-          data-drawer
-        >
+        <div class="group/drawer relative min-w-40 flex-1 wq-edge [&+&]:border-s" data-drawer>
           <button
             type="button"
             data-front
-            class="flex w-full items-center gap-2 bg-ground px-3.5 py-3 text-start text-sm text-ink transition-colors hover:bg-ground-2 group-data-[open]/drawer:bg-deep group-data-[open]/drawer:text-ground"
+            class="flex w-full items-center gap-2 wq-surface-room px-3.5 py-3 text-start text-sm wq-ink-room transition-colors hover:wq-wq-surface-room-2 group-data-[open]/drawer:wq-surface-deep group-data-[open]/drawer:wq-ink-deep"
             aria-expanded="false"
           >
             <span class="h-0.5 w-6 bg-accent" />
@@ -46,16 +43,22 @@ const items = drawers.map((drawer) => ({
             </svg>
           </button>
 
-          <div class="absolute inset-x-0 top-full z-30 hidden flex-col gap-2 border border-accent bg-deep p-3.5 shadow-[0_18px_40px_rgba(20,22,18,0.3)] group-data-[open]/drawer:flex">
+          <div class="absolute inset-x-0 top-full z-30 hidden flex-col gap-2 border border-accent wq-surface-deep p-3.5 shadow-[0_18px_40px_rgba(0,0,0,0.35)] group-data-[open]/drawer:flex">
             {drawer.pieces.map((piece) => (
-              <a href={url('/catalog')} class="flex items-baseline justify-between gap-3 text-sm text-ground/90 transition-colors hover:text-accent-l">
+              <a
+                href={url('/catalog')}
+                class="flex items-baseline justify-between gap-3 text-sm wq-ink-deep transition-colors hover:text-accent-l"
+              >
                 <span>{piece.name}</span>
-                <span class="font-data text-[0.65rem] tracking-[0.12em] text-ground/50" dir="ltr">
+                <span class="font-data text-[0.65rem] tracking-[0.12em] wq-ink-deep-2" dir="ltr">
                   {piece.no}
                 </span>
               </a>
             ))}
-            <a href={url('/catalog')} class="border-t border-ground/15 pt-2 text-sm font-medium text-ground transition-colors hover:text-accent-l">
+            <a
+              href={url('/catalog')}
+              class="border-t border-deep-ink/15 pt-2 text-sm font-medium wq-ink-deep transition-colors hover:text-accent-l"
+            >
               كل الأدراج
             </a>
           </div>

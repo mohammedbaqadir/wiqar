@@ -1,6 +1,7 @@
 ---
-import { url } from '@/lib/url';
 import Button from '@/components/starwind/button/Button.astro';
+import { palettes } from '@/data/palettes';
+import { url } from '@/lib/url';
 
 const links = [
   { href: url('/'), label: 'القاعة' },
@@ -11,25 +12,39 @@ const links = [
 ---
 
 <header class="relative z-30">
-  <div class="border-b border-hairline bg-ground-2">
+  <div class="border-b wq-edge wq-wq-surface-room-2">
     <div
-      class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-2 text-[0.8125rem] text-ink-3 lg:px-8"
+      class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-5 py-2 text-[0.8125rem] wq-ink-room-3 lg:px-8"
     >
       <span class="font-data tracking-[0.08em]">عرض تصميميّ · محتوى تجريبي</span>
-      <div class="flex items-center gap-2 text-xs">
-        <Button id="wq-palette-toggle" variant="outline" size="sm" class="!h-7 !px-3 !text-xs"
-          >أزرق حجري</Button
+
+      <div class="flex items-center gap-3">
+        <div class="flex items-center gap-1.5" role="group" aria-label="نظام الألوان">
+          {
+            palettes.map((palette) => (
+              <button
+                type="button"
+                data-palette-btn={palette.id}
+                title={palette.name}
+                aria-label={palette.name}
+                style={`background:${palette.swatch}`}
+                class="size-4 rounded-full border wq-edge transition-transform hover:scale-125 data-[active]:ring-2 data-[active]:ring-accent data-[active]:ring-offset-2 data-[active]:ring-offset-room-2"
+              />
+            ))
+          }
+        </div>
+        <Button id="wq-theme-toggle" variant="outline" size="sm" class="!h-7 !px-3 !text-xs"
+          >ليل</Button
         >
-        <Button id="wq-theme-toggle" variant="outline" size="sm" class="!h-7 !px-3 !text-xs">ليل</Button>
       </div>
     </div>
   </div>
 
-  <div class="border-b border-hairline-strong bg-ground">
+  <div class="border-b wq-edge wq-surface-room">
     <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-5 px-5 py-4 lg:px-8">
       <a href={url('/')} class="flex items-baseline gap-3">
-        <span class="font-display text-3xl leading-none text-ink">وقار</span>
-        <span class="hidden font-data text-[0.68rem] tracking-[0.18em] text-ink-3 sm:inline" dir="ltr"
+        <span class="font-display text-3xl leading-none wq-ink-room">وقار</span>
+        <span class="hidden font-data text-[0.68rem] tracking-[0.18em] wq-ink-room-3 sm:inline" dir="ltr"
           >THE ACCESSION ROOM</span
         >
       </a>
@@ -39,7 +54,7 @@ const links = [
           links.map((link) => (
             <a
               href={link.href}
-              class="text-ink-2 transition-colors hover:text-ink hover:underline hover:decoration-accent hover:decoration-2 hover:underline-offset-4"
+              class="wq-ink-room-2 transition-colors hover:wq-ink-room hover:underline hover:decoration-accent hover:decoration-2 hover:underline-offset-4"
             >
               {link.label}
             </a>
@@ -47,7 +62,7 @@ const links = [
         }
         <a
           href={url('/sheet')}
-          class="ms-1 inline-flex items-center gap-2 rounded-sm border border-hairline-strong px-2.5 py-1.5 text-ink transition-colors hover:border-accent"
+          class="ms-1 inline-flex items-center gap-2 rounded-sm border wq-edge px-2.5 py-1.5 wq-ink-room transition-colors hover:border-accent"
           aria-label="السلة"
         >
           <svg
@@ -60,10 +75,10 @@ const links = [
             class="size-4"
             aria-hidden="true"
           >
-            <path d="M6 8h12l-1 11H7z" />
-            <path d="M9 8a3 3 0 0 1 6 0" />
+            <path d="M6 8h12l-1 11H7z"></path>
+            <path d="M9 8a3 3 0 0 1 6 0"></path>
           </svg>
-          <span class="font-data text-[0.68rem] leading-none tracking-[0.06em] text-ink">٣</span>
+          <span class="font-data text-[0.68rem] leading-none tracking-[0.06em]">٣</span>
         </a>
       </nav>
     </div>
@@ -71,15 +86,23 @@ const links = [
 </header>
 
 <script>
+  import { palettes } from '@/data/palettes';
+
   const root = document.documentElement;
   const themeBtn = document.getElementById('wq-theme-toggle');
-  const paletteBtn = document.getElementById('wq-palette-toggle');
+  const paletteBtns = Array.from(document.querySelectorAll<HTMLElement>('[data-palette-btn]'));
 
   const sync = () => {
+    const current = root.getAttribute('data-palette') ?? palettes[0].id;
     if (themeBtn) themeBtn.textContent = root.classList.contains('dark') ? 'نهار' : 'ليل';
-    if (paletteBtn) {
-      paletteBtn.textContent = root.getAttribute('data-palette') === 'olive' ? 'زيتوني' : 'أزرق حجري';
-    }
+    paletteBtns.forEach((button) => {
+      const active = button.dataset.paletteBtn === current;
+      if (active) {
+        button.setAttribute('data-active', '');
+      } else {
+        button.removeAttribute('data-active');
+      }
+    });
   };
 
   themeBtn?.addEventListener('click', () => {
@@ -90,17 +113,16 @@ const links = [
     sync();
   });
 
-  paletteBtn?.addEventListener('click', () => {
-    const olive = root.getAttribute('data-palette') === 'olive';
-    if (olive) {
-      root.removeAttribute('data-palette');
-    } else {
-      root.setAttribute('data-palette', 'olive');
-    }
-    try {
-      localStorage.setItem('wq-palette', olive ? 'bluestone' : 'olive');
-    } catch (error) {}
-    sync();
+  paletteBtns.forEach((button) => {
+    button.addEventListener('click', () => {
+      const id = button.dataset.paletteBtn;
+      if (!id) return;
+      root.setAttribute('data-palette', id);
+      try {
+        localStorage.setItem('wq-palette', id);
+      } catch (error) {}
+      sync();
+    });
   });
 
   sync();
