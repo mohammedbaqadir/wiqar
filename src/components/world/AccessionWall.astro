@@ -1,7 +1,7 @@
 ---
-import Badge from '@/components/starwind/badge/Badge.astro';
 import DrawnPiece from './DrawnPiece.astro';
 import { url } from '@/lib/url';
+import { money, toArabicDigits } from '@/lib/format';
 import type { Piece } from '@/data/pieces';
 
 interface Props {
@@ -9,62 +9,62 @@ interface Props {
   title?: string;
 }
 
-const { pieces, title = 'أحدث المقتنيات' } = Astro.props;
-const [lead, ...rest] = pieces;
+const { pieces, title = 'مقتنيات مختارة' } = Astro.props;
 ---
 
-<section class="border-y wq-edge wq-surface-deep py-12">
-  <div class="mx-auto max-w-6xl px-5 lg:px-8">
-    <div class="mb-8 flex items-end justify-between gap-4">
-      <h2
-        class="relative pb-3 font-display text-3xl wq-ink-deep after:absolute after:bottom-0 after:start-0 after:h-[3px] after:w-12 after:bg-accent"
-      >
-        {title}
-      </h2>
-      <a
-        href={url('/catalog')}
-        class="text-sm wq-ink-deep-2 transition-colors hover:text-accent-l"
-      >
-        الفهرس كاملًا
-      </a>
-    </div>
-
+<section class="mx-auto max-w-6xl px-5 py-14 lg:px-8">
+  <header class="mb-8 flex items-end justify-between gap-4">
+    <h2 class="font-display text-2xl text-room-ink lg:text-3xl">{title}</h2>
     <a
-      href={url('/sheet')}
-      class="group mb-8 grid items-center gap-6 border border-accent/60 wq-surface-exhibit p-6 transition-colors hover:border-accent md:grid-cols-[1fr_1.2fr]"
+      href={url('/catalog')}
+      class="text-sm text-room-ink-2 underline decoration-hairline underline-offset-4 transition-colors hover:text-room-ink hover:decoration-accent"
     >
-      <DrawnPiece kind={lead.kind} class="mx-auto h-48 w-auto text-ink" />
-      <div class="space-y-2">
-        <p class="font-data text-[0.7rem] tracking-[0.2em] text-accent-d" dir="ltr">{lead.no}</p>
-        <h3 class="font-display text-3xl text-ink">{lead.name}</h3>
-        <p class="max-w-prose font-reading text-lg leading-loose text-ink-2">{lead.standard}</p>
-        <p class="font-data text-xs text-ink-3">{lead.origin}</p>
-      </div>
+      المتجر كاملًا
     </a>
+  </header>
 
-    <div class="group/wall grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-      {
-        rest.map((piece) => (
-          <a
-            href={url('/sheet')}
-            class="flex flex-col gap-3 border wq-edge wq-surface-exhibit p-5 transition-all duration-300 group-hover/wall:opacity-60 hover:border-accent hover:opacity-100!"
-          >
-            <div class="flex items-start justify-between gap-3">
-              <DrawnPiece kind={piece.kind} class="h-20 w-auto text-ink" />
-              <Badge
-                variant="outline"
-                size="sm"
-                class="wq-edge-exhibit font-data text-[0.65rem] tracking-[0.12em] text-ink-3"
-              >
-                <span dir="ltr">{piece.no}</span>
-              </Badge>
+  <div class="grid grid-cols-2 gap-x-4 gap-y-10 md:grid-cols-3 lg:grid-cols-4 lg:gap-x-6">
+    {
+      pieces.map((piece) => (
+        <a href={url('/sheet')} class="group flex flex-col">
+          <div class="relative aspect-4/5 w-full overflow-hidden bg-exhibit-2">
+            <DrawnPiece
+              kind={piece.kind}
+              class="absolute inset-0 m-auto h-2/3 w-auto text-ink/85 transition-transform duration-500 ease-out group-hover:scale-[1.04]"
+            />
+            {piece.lowStock && (
+              <span class="absolute start-3 top-3 bg-signal px-2 py-0.5 font-data text-[0.6rem] text-exhibit">
+                آخر {toArabicDigits(piece.lowStock)}
+              </span>
+            )}
+          </div>
+
+          <div class="mt-3 flex items-start justify-between gap-3">
+            <div class="min-w-0">
+              <h3 class="truncate text-[0.95rem] text-room-ink group-hover:underline group-hover:decoration-accent group-hover:decoration-2 group-hover:underline-offset-4">
+                {piece.name}
+              </h3>
+              <p class="mt-1 font-data text-[0.65rem] tracking-[0.12em] text-room-ink-3" dir="ltr">
+                {piece.no}
+              </p>
             </div>
-            <h3 class="font-display text-xl text-ink">{piece.name}</h3>
-            <p class="font-reading text-base leading-loose text-ink-2">{piece.standard}</p>
-            <p class="mt-auto font-data text-[0.7rem] text-ink-3">{piece.origin}</p>
-          </a>
-        ))
-      }
-    </div>
+            <div class="shrink-0 text-end">
+              <p class="font-data text-sm text-room-ink">{money(piece.price)}</p>
+              {piece.compareAt && (
+                <p class="font-data text-[0.7rem] text-room-ink-3 line-through">
+                  {money(piece.compareAt)}
+                </p>
+              )}
+            </div>
+          </div>
+
+          <span
+            class="mt-2 hidden font-data text-[0.7rem] tracking-[0.08em] text-accent-d group-hover:inline"
+          >
+            أضف إلى السلة +
+          </span>
+        </a>
+      ))
+    }
   </div>
 </section>

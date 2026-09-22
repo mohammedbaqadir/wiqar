@@ -1,68 +1,67 @@
 ---
-import Button from '@/components/starwind/button/Button.astro';
-import { palettes } from '@/data/palettes';
 import { url } from '@/lib/url';
 
 const links = [
-  { href: url('/'), label: 'القاعة' },
-  { href: url('/catalog'), label: 'الفهرس' },
-  { href: url('/sheet'), label: 'بطاقة قطعة' },
-  { href: url('/guide'), label: 'النظام' },
+  { href: url('/catalog'), label: 'المتجر' },
+  { href: url('/sheet'), label: 'قطعة' },
+  { href: url('/guide'), label: 'اللغة' },
 ];
 ---
 
 <header class="relative z-30">
-  <div class="border-b wq-edge wq-wq-surface-room-2">
+  <div class="border-b border-room bg-room-2">
     <div
-      class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-5 py-2 text-[0.8125rem] wq-ink-room-3 lg:px-8"
+      class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-2 text-[0.75rem] text-room-ink-3 lg:px-8"
     >
-      <span class="font-data tracking-[0.08em]">عرض تصميميّ · محتوى تجريبي</span>
-
-      <div class="flex items-center gap-3">
-        <div class="flex items-center gap-1.5" role="group" aria-label="نظام الألوان">
-          {
-            palettes.map((palette) => (
-              <button
-                type="button"
-                data-palette-btn={palette.id}
-                title={palette.name}
-                aria-label={palette.name}
-                style={`background:${palette.swatch}`}
-                class="size-4 rounded-full border wq-edge transition-transform hover:scale-125 data-[active]:ring-2 data-[active]:ring-accent data-[active]:ring-offset-2 data-[active]:ring-offset-room-2"
-              />
-            ))
-          }
-        </div>
-        <Button id="wq-theme-toggle" variant="outline" size="sm" class="!h-7 !px-3 !text-xs"
-          >ليل</Button
-        >
-      </div>
+      <span>توصيل داخل المملكة · إرجاع خلال ١٤ يومًا</span>
+      <span class="hidden sm:inline">بيانات مؤقتة — المتجر قيد الإنشاء</span>
     </div>
   </div>
 
-  <div class="border-b wq-edge wq-surface-room">
-    <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-5 px-5 py-4 lg:px-8">
+  <div class="border-b border-room bg-room">
+    <div
+      class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-5 px-5 py-5 lg:px-8"
+    >
       <a href={url('/')} class="flex items-baseline gap-3">
-        <span class="font-display text-3xl leading-none wq-ink-room">وقار</span>
-        <span class="hidden font-data text-[0.68rem] tracking-[0.18em] wq-ink-room-3 sm:inline" dir="ltr"
-          >THE ACCESSION ROOM</span
+        <span class="font-display text-3xl leading-none text-room-ink">وقار</span>
+        <span
+          class="hidden font-data text-[0.65rem] tracking-[0.2em] text-room-ink-3 md:inline"
+          dir="ltr">WIỌAR</span
         >
       </a>
 
-      <nav class="flex items-center gap-5 text-sm" aria-label="التنقل">
+      <nav class="flex items-center gap-6 text-sm" aria-label="التنقل">
         {
           links.map((link) => (
             <a
               href={link.href}
-              class="wq-ink-room-2 transition-colors hover:wq-ink-room hover:underline hover:decoration-accent hover:decoration-2 hover:underline-offset-4"
+              class="text-room-ink-2 transition-colors hover:text-room-ink hover:underline hover:decoration-accent hover:decoration-2 hover:underline-offset-4"
             >
               {link.label}
             </a>
           ))
         }
         <a
+          href={url('/catalog')}
+          class="inline-flex items-center gap-2 text-room-ink-2 transition-colors hover:text-room-ink"
+          aria-label="البحث"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            class="size-4"
+            aria-hidden="true"
+          >
+            <circle cx="11" cy="11" r="6"></circle>
+            <path d="M20 20l-4.2-4.2"></path>
+          </svg>
+        </a>
+        <a
           href={url('/sheet')}
-          class="ms-1 inline-flex items-center gap-2 rounded-sm border wq-edge px-2.5 py-1.5 wq-ink-room transition-colors hover:border-accent"
+          class="inline-flex items-center gap-2 text-room-ink transition-colors hover:text-accent-d"
           aria-label="السلة"
         >
           <svg
@@ -78,52 +77,9 @@ const links = [
             <path d="M6 8h12l-1 11H7z"></path>
             <path d="M9 8a3 3 0 0 1 6 0"></path>
           </svg>
-          <span class="font-data text-[0.68rem] leading-none tracking-[0.06em]">٣</span>
+          <span class="font-data text-[0.7rem] leading-none" dir="ltr">٣</span>
         </a>
       </nav>
     </div>
   </div>
 </header>
-
-<script>
-  import { palettes } from '@/data/palettes';
-
-  const root = document.documentElement;
-  const themeBtn = document.getElementById('wq-theme-toggle');
-  const paletteBtns = Array.from(document.querySelectorAll<HTMLElement>('[data-palette-btn]'));
-
-  const sync = () => {
-    const current = root.getAttribute('data-palette') ?? palettes[0].id;
-    if (themeBtn) themeBtn.textContent = root.classList.contains('dark') ? 'نهار' : 'ليل';
-    paletteBtns.forEach((button) => {
-      const active = button.dataset.paletteBtn === current;
-      if (active) {
-        button.setAttribute('data-active', '');
-      } else {
-        button.removeAttribute('data-active');
-      }
-    });
-  };
-
-  themeBtn?.addEventListener('click', () => {
-    const dark = root.classList.toggle('dark');
-    try {
-      localStorage.setItem('wq-theme', dark ? 'dark' : 'light');
-    } catch (error) {}
-    sync();
-  });
-
-  paletteBtns.forEach((button) => {
-    button.addEventListener('click', () => {
-      const id = button.dataset.paletteBtn;
-      if (!id) return;
-      root.setAttribute('data-palette', id);
-      try {
-        localStorage.setItem('wq-palette', id);
-      } catch (error) {}
-      sync();
-    });
-  });
-
-  sync();
-</script>
