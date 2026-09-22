@@ -1,43 +1,50 @@
 ---
 import Button from '@/components/starwind/button/Button.astro';
-import DrawnPiece from './DrawnPiece.astro';
-import { url } from '@/lib/url';
+import { imageSrc, isLowStock, lowStockLabel, type ApiProduct } from '@/lib/api';
 import { money } from '@/lib/format';
-import type { Piece } from '@/data/pieces';
+import { url } from '@/lib/url';
 
 interface Props {
-  piece: Piece;
+  product: ApiProduct;
 }
 
-const { piece } = Astro.props;
+const { product } = Astro.props;
 ---
 
-<section class="relative">
-  <div class="relative flex min-h-[72vh] items-center justify-center overflow-hidden bg-exhibit-2">
-    <DrawnPiece
-      kind={piece.kind}
-      class="h-[46vh] max-h-[520px] w-auto text-ink/85 transition-transform duration-[1200ms] ease-out hover:scale-[1.02]"
+<section class="relative border-b border-room">
+  <div class="relative min-h-[48vh] overflow-hidden bg-exhibit-2 sm:min-h-[54vh] lg:min-h-[62vh]">
+    <img
+      src={imageSrc(product.image)}
+      alt={product.image.alt}
+      class="absolute inset-0 size-full object-cover"
+      fetchpriority="high"
     />
-    <span
-      class="pointer-events-none absolute inset-0 animate-in fade-in bg-[radial-gradient(60%_45%_at_50%_32%,rgba(255,255,255,0.55),transparent_70%)] duration-1000 group-data-[drawer=open]/page:opacity-20"
-    ></span>
+    <div class="absolute inset-0 bg-gradient-to-t from-ink/75 via-ink/20 to-ink/5"></div>
 
-    <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-exhibit/95 to-transparent p-6 pt-24 lg:p-10">
-      <div class="mx-auto flex max-w-6xl flex-col items-start gap-2">
-        <p class="font-data text-[0.7rem] tracking-[0.2em] text-room-ink-3" dir="ltr">{piece.no}</p>
-        <h1 class="font-display text-4xl leading-tight text-room-ink lg:text-6xl">
-          {piece.name}
+    <div class="absolute inset-x-0 bottom-0">
+      <div
+        class="mx-auto flex max-w-6xl flex-col items-start gap-3 px-5 pb-10 lg:px-8 lg:pb-14"
+      >
+        <p class="font-data text-[0.7rem] tracking-[0.2em] text-exhibit/70" dir="ltr">
+          {product.sku}
+        </p>
+        <h1 class="font-display text-4xl leading-tight text-exhibit lg:text-6xl">
+          {product.name}
         </h1>
-        <p class="max-w-xl font-reading text-base leading-loose text-room-ink-2 lg:text-lg">
-          {piece.standard}
+        <p class="max-w-xl font-reading text-base leading-loose text-exhibit/85 lg:text-lg">
+          {product.standard}
         </p>
         <div class="mt-2 flex flex-wrap items-center gap-5">
-          <span class="font-data text-lg text-room-ink">{money(piece.price)}</span>
+          <span class="font-data text-lg text-exhibit">{money(product.price)}</span>
+          {
+            isLowStock(product) && (
+              <span class="font-data text-[0.7rem] text-exhibit/70">{lowStockLabel(product)}</span>
+            )
+          }
           <Button
             as="a"
-            href={url('/sheet')}
-            variant="primary"
-            class="bg-ink text-exhibit hover:bg-ink/90 dark:bg-ink dark:text-exhibit"
+            href={url(`/product/${product.slug}`)}
+            variant="outline"
           >
             تسوّق القطعة
           </Button>

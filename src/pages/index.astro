@@ -3,17 +3,56 @@ import Base from '@/layouts/Base.astro';
 import SiteHeader from '@/components/world/SiteHeader.astro';
 import Vitrine from '@/components/world/Vitrine.astro';
 import DrawerRail from '@/components/world/DrawerRail.astro';
-import AccessionWall from '@/components/world/AccessionWall.astro';
+import ProductGrid from '@/components/world/ProductGrid.astro';
 import SiteFooter from '@/components/world/SiteFooter.astro';
-import { leadPiece, pieces } from '@/data/pieces';
+import { getProducts } from '@/lib/api';
+
+const products = await getProducts();
+const lead = products[0];
+const featured = products.slice(1, 9);
+
+const promises = [
+  { term: 'الجودة', note: 'مواد تدوم، وتشطيب لا يتقشّر بعد شهر.' },
+  { term: 'الذوق', note: 'شكل يليق بالاستعمال اليومي، لا بالصورة وحدها.' },
+  { term: 'القيمة', note: 'سعر يبقى معقولًا بعد سنوات، لا في يوم الشراء.' },
+];
 ---
 
 <Base>
   <SiteHeader />
   <main>
-    <Vitrine piece={leadPiece} />
+    <Vitrine product={lead} />
     <DrawerRail />
-    <AccessionWall pieces={pieces} />
+    <ProductGrid products={featured} title="مقتنيات مختارة" />
+
+    <section id="standard" class="border-t border-room bg-room-2">
+      <div class="mx-auto grid max-w-6xl gap-10 px-5 py-16 lg:grid-cols-[1fr_1.3fr] lg:px-8">
+        <h2 class="font-display text-3xl leading-tight text-room-ink lg:text-4xl">
+          لماذا هذه القطع<br />وليس غيرها
+        </h2>
+
+        <div class="space-y-8">
+          <p class="max-w-prose font-reading text-lg leading-loose text-room-ink-2">
+            كل قطعة تصل إلى المتجر تمرّ بثلاثة أسئلة: هل تُصنع كما ينبغي؟ هل تخدم استعمالًا حقيقيًا؟
+            وهل يبقى سعرها معقولًا بعد سنوات؟ ما لا يجتاز الأسئلة الثلاثة لا يُعرض — ولذلك قائمة
+            المتجر قصيرة دائمًا.
+          </p>
+
+          <dl class="grid gap-6 sm:grid-cols-3">
+            {
+              promises.map((promise) => (
+                <div class="space-y-2 border-t border-room pt-4">
+                  <dt class="font-data text-[0.7rem] tracking-[0.12em] text-accent-d">
+                    {promise.term}
+                  </dt>
+                  <dd class="text-sm leading-relaxed text-room-ink-2">{promise.note}</dd>
+                </div>
+              ))
+            }
+          </dl>
+        </div>
+      </div>
+    </section>
   </main>
   <SiteFooter />
 </Base>

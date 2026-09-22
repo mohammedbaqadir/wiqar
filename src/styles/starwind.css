@@ -1,12 +1,11 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @plugin "@tailwindcss/forms";
-@custom-variant dark (&:where(.dark, .dark *));
 
 /* ─────────────────────────────────────────────────────────────
    wiqar · the world mapped onto Tailwind's theme.
-   Token definitions live in world.css (:root, .dark, [data-palette]);
-   this block turns them into utilities: bg-ground, text-ink,
+   Token definitions live in world.css (:root);
+   this block turns them into utilities: bg-room, text-ink,
    border-hairline, font-display, font-reading, font-data…
    ───────────────────────────────────────────────────────────── */
 @theme inline {
@@ -153,52 +152,14 @@
   --sidebar-outline: var(--color-neutral-400);
 }
 
-.dark {
-  --background: var(--color-neutral-950);
-  --foreground: var(--color-neutral-50);
-  --card: var(--color-neutral-900);
-  --card-foreground: var(--color-neutral-50);
-  --popover: var(--color-neutral-900);
-  --popover-foreground: var(--color-neutral-50);
-  --primary: var(--color-blue-700);
-  --primary-foreground: var(--color-neutral-50);
-  --primary-accent: var(--color-blue-400);
-  --secondary: var(--color-neutral-800);
-  --secondary-foreground: var(--color-neutral-50);
-  --secondary-accent: var(--color-neutral-50);
-  --muted: var(--color-neutral-800);
-  --muted-foreground: var(--color-neutral-400);
-  --accent: var(--color-neutral-700);
-  --accent-foreground: var(--color-neutral-50);
-  --info: var(--color-sky-300);
-  --info-foreground: var(--color-sky-950);
-  --success: var(--color-green-300);
-  --success-foreground: var(--color-green-950);
-  --warning: var(--color-amber-300);
-  --warning-foreground: var(--color-amber-950);
-  --error: var(--color-red-800);
-  --error-foreground: var(--color-neutral-50);
-  --border: --alpha(var(--color-neutral-50) / 10%);
-  --input: --alpha(var(--color-neutral-50) / 15%);
-  --outline: var(--color-neutral-500);
-
-  /* sidebars variables */
-  --sidebar-background: var(--color-neutral-900);
-  --sidebar-foreground: var(--color-neutral-50);
-  --sidebar-primary: var(--color-blue-700);
-  --sidebar-primary-foreground: var(--color-neutral-50);
-  --sidebar-accent: var(--color-neutral-800);
-  --sidebar-accent-foreground: var(--color-neutral-100);
-  --sidebar-border: var(--color-neutral-800);
-  --sidebar-outline: var(--color-neutral-600);
-}
+/* wiqar's materials override these defaults at :root (see world.css). */
 
 @layer base {
   * {
     @apply border-border outline-outline/50;
   }
   body {
-    @apply bg-background text-foreground scheme-light dark:scheme-dark;
+    @apply bg-background text-foreground scheme-light;
   }
   button {
     @apply cursor-pointer;

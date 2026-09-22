@@ -1,9 +1,9 @@
 @import './world-fonts.css';
 
 /* ─────────────────────────────────────────────────────────────
-   THE WORLD — the layer beneath the palettes.
-   Palette values themselves are generated from src/data/palettes.ts
-   and injected by the layout as CSS custom properties:
+   THE WORLD — the layer beneath the theme.
+   Material values live in src/data/theme.ts and are injected by the
+   layout as CSS custom properties:
    room / exhibit / ink / roomInk / deep / accent / signal.
    This file maps them onto Starwind's contract and sets the page.
    ───────────────────────────────────────────────────────────── */
@@ -43,11 +43,7 @@
     color-scheme: light;
   }
 
-  html.dark {
-    color-scheme: dark;
-  }
-
-  /* the room: lit from above by day, lamplit by night */
+  /* the room, lit from above */
   body {
     background-color: var(--wq-room);
     background-image:
@@ -55,12 +51,6 @@
       linear-gradient(180deg, rgba(0, 0, 0, 0.035), rgba(0, 0, 0, 0) 45%);
     color: var(--wq-room-ink);
     font-family: var(--wq-font-ui);
-  }
-
-  html.dark body {
-    background-image:
-      radial-gradient(130% 90% at 50% -20%, rgba(255, 233, 189, 0.06), rgba(0, 0, 0, 0) 60%),
-      linear-gradient(180deg, rgba(0, 0, 0, 0.32), rgba(0, 0, 0, 0) 55%);
   }
 
   /* paper grain */
@@ -74,10 +64,6 @@
     background-repeat: repeat;
     background-size: 140px 140px;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
-  }
-
-  html.dark body::after {
-    opacity: 0.035;
   }
 
   ::selection {
@@ -110,22 +96,3 @@
     border: 2px solid var(--wq-room);
   }
 }
-
-/* ── palette-driven surfaces ──────────────────────────────────
-   Plain classes (not layered utilities) so the palette vars always
-   repaint the surfaces when the palette or the mode changes. */
-
-.wq-surface-room { background-color: var(--wq-room); color: var(--wq-room-ink); }
-.wq-surface-room-2 { background-color: var(--wq-room-2); color: var(--wq-room-ink); }
-.wq-surface-exhibit { background-color: var(--wq-exhibit); color: var(--wq-ink); }
-.wq-surface-exhibit-2 { background-color: var(--wq-exhibit-2); color: var(--wq-ink); }
-.wq-surface-deep { background-color: var(--wq-deep); color: var(--wq-deep-ink); }
-
-.wq-ink-room { color: var(--wq-room-ink); }
-.wq-ink-room-2 { color: var(--wq-room-ink-2); }
-.wq-ink-room-3 { color: var(--wq-room-ink-3); }
-.wq-ink-deep { color: var(--wq-deep-ink); }
-.wq-ink-deep-2 { color: var(--wq-deep-ink-2); }
-
-.wq-edge { border-color: var(--wq-hairline); }
-.wq-edge-exhibit { border-color: var(--wq-hairline-ink); }

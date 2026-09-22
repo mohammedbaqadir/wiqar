@@ -1,64 +1,50 @@
 ---
 import Separator from '@/components/starwind/separator/Separator.astro';
+import { toArabicDigits } from '@/lib/format';
 import { url } from '@/lib/url';
 
-const year = new Date().getFullYear();
+const year = toArabicDigits(new Date().getFullYear());
+const linkClass =
+  'transition-colors hover:text-room-ink hover:underline hover:decoration-accent hover:decoration-2 hover:underline-offset-4';
 ---
 
-<footer class="mt-20 border-t wq-edge wq-wq-surface-room-2">
+<footer class="mt-20 border-t border-room bg-room-2">
   <div class="mx-auto grid max-w-6xl grid-cols-1 gap-8 px-5 py-12 lg:grid-cols-3 lg:px-8">
     <div class="space-y-4">
       <h3
-        class="relative pb-2 font-display text-lg wq-ink-room after:absolute after:bottom-0 after:start-0 after:h-[2px] after:w-5 after:bg-accent"
+        class="relative pb-2 font-display text-lg text-room-ink after:absolute after:bottom-0 after:start-0 after:h-[2px] after:w-5 after:bg-accent"
       >
         وقار
       </h3>
-      <p class="max-w-sm font-reading text-base leading-loose wq-ink-room-2">
-        قاعة المقتنيات: كل قطعة تدخل بمعيار واحد — الجودة والذوق والقيمة في مستوى واحد. لا شيء
-        عاديّ هنا.
+      <p class="max-w-sm font-reading text-base leading-loose text-room-ink-2">
+        مقتنيات مختارة بمعيار واحد: الجودة والذوق والقيمة في مستوى واحد. القطعة التي لا تجتاز
+        الأسئلة الثلاثة لا تُعرض.
       </p>
     </div>
 
     <div class="space-y-3">
       <h3
-        class="relative pb-2 font-display text-lg wq-ink-room after:absolute after:bottom-0 after:start-0 after:h-[2px] after:w-5 after:bg-accent"
+        class="relative pb-2 font-display text-lg text-room-ink after:absolute after:bottom-0 after:start-0 after:h-[2px] after:w-5 after:bg-accent"
       >
         تواصل
       </h3>
-      <ul class="space-y-2 font-data text-sm wq-ink-room-2" dir="ltr">
+      <ul class="space-y-2 font-data text-sm text-room-ink-2" dir="ltr">
         <li>support@wiqar.sa</li>
         <li>+966 53 686 2097</li>
       </ul>
+      <p class="text-sm text-room-ink-3">خدمة العملاء: ٩ صباحًا — ٩ مساءً</p>
     </div>
 
     <div class="space-y-3">
       <h3
-        class="relative pb-2 font-display text-lg wq-ink-room after:absolute after:bottom-0 after:start-0 after:h-[2px] after:w-5 after:bg-accent"
+        class="relative pb-2 font-display text-lg text-room-ink after:absolute after:bottom-0 after:start-0 after:h-[2px] after:w-5 after:bg-accent"
       >
-        في القاعة
+        في المتجر
       </h3>
-      <ul class="space-y-2 text-sm wq-ink-room-2">
-        <li>
-          <a
-            href={url('/catalog')}
-            class="transition-colors hover:wq-ink-room hover:underline hover:decoration-accent hover:decoration-2 hover:underline-offset-4"
-            >الفهرس</a
-          >
-        </li>
-        <li>
-          <a
-            href={url('/sheet')}
-            class="transition-colors hover:wq-ink-room hover:underline hover:decoration-accent hover:decoration-2 hover:underline-offset-4"
-            >بطاقة قطعة</a
-          >
-        </li>
-        <li>
-          <a
-            href={url('/guide')}
-            class="transition-colors hover:wq-ink-room hover:underline hover:decoration-accent hover:decoration-2 hover:underline-offset-4"
-            >نظام التصميم</a
-          >
-        </li>
+      <ul class="space-y-2 text-sm text-room-ink-2">
+        <li><a href={url('/catalog')} class={linkClass}>كل المقتنيات</a></li>
+        <li><a href={`${url('/')}#standard`} class={linkClass}>معيار الاختيار</a></li>
+        <li><a href={`${url('/')}#standard`} class={linkClass}>الشحن والإرجاع</a></li>
       </ul>
     </div>
   </div>
@@ -66,9 +52,9 @@ const year = new Date().getFullYear();
   <Separator class="mx-auto max-w-6xl" />
 
   <div
-    class="mx-auto flex max-w-6xl flex-col items-center justify-between gap-2 px-5 py-5 text-center font-data text-[0.7rem] tracking-[0.06em] wq-ink-room-3 sm:flex-row lg:px-8"
+    class="mx-auto flex max-w-6xl flex-col items-center justify-between gap-2 px-5 py-5 text-center font-data text-[0.7rem] tracking-[0.06em] text-room-ink-3 sm:flex-row lg:px-8"
   >
-    <span>بيانات مؤقتة · المتجر قيد الإنشاء</span>
+    <span>الأسعار تشمل ضريبة القيمة المضافة · الشحن يُحسب عند الدفع</span>
     <span dir="ltr">© {year} WIỌAR</span>
   </div>
 </footer>
