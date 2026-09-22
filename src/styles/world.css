@@ -1,0 +1,177 @@
+@import './world-fonts.css';
+
+/* ─────────────────────────────────────────────────────────────
+   THE WORLD — tokens are the same language as the theme's
+   DESIGN.md, remapped onto Starwind's variable contract so its
+   components speak wiqar out of the box.
+   ───────────────────────────────────────────────────────────── */
+
+:root {
+  /* bluestone · bone paper, slate blue, champagne */
+  --wq-ground: #f3efe6;
+  --wq-ground-2: #eae4d6;
+  --wq-ground-3: #d8d1c0;
+  --wq-paper: #fbf8f1;
+  --wq-ink: #1c2637;
+  --wq-ink-2: #33445c;
+  --wq-ink-3: #64748b;
+  --wq-accent: #c6a664;
+  --wq-accent-d: #a9884a;
+  --wq-accent-l: #dcc189;
+  --wq-slate: #46586e;
+  --wq-deep: #22303f;
+  --wq-signal: #a8452f;
+  --wq-hairline: rgba(28, 38, 55, 0.15);
+  --wq-hairline-strong: rgba(28, 38, 55, 0.3);
+
+  --wq-font-display: 'Naseeb', 'Reem Kufi', 'IBM Plex Sans Arabic', sans-serif;
+  --wq-font-reading: 'Amiri', 'IBM Plex Sans Arabic', serif;
+  --wq-font-ui: 'IBM Plex Sans Arabic', system-ui, sans-serif;
+  --wq-font-data: 'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace;
+
+  /* Starwind contract → the world */
+  --background: var(--wq-ground);
+  --foreground: var(--wq-ink);
+  --card: var(--wq-paper);
+  --card-foreground: var(--wq-ink);
+  --popover: var(--wq-paper);
+  --popover-foreground: var(--wq-ink);
+  --primary: var(--wq-accent);
+  --primary-foreground: var(--wq-ink);
+  --primary-accent: var(--wq-accent-d);
+  --secondary: var(--wq-ground-2);
+  --secondary-foreground: var(--wq-ink);
+  --secondary-accent: var(--wq-ink);
+  --muted: var(--wq-ground-2);
+  --muted-foreground: var(--wq-ink-3);
+  --accent: var(--wq-ground-2);
+  --accent-foreground: var(--wq-ink);
+  --border: var(--wq-hairline);
+  --input: var(--wq-hairline);
+  --outline: var(--wq-accent-d);
+  --radius: 4px;
+}
+
+/* night · warm charcoal, never black */
+.dark {
+  --wq-ground: #171b20;
+  --wq-ground-2: #1e242b;
+  --wq-ground-3: #2b333d;
+  --wq-paper: #1e242b;
+  --wq-ink: #ece6d9;
+  --wq-ink-2: #c6c0b3;
+  --wq-ink-3: #8d96a3;
+  --wq-accent: #c9a96a;
+  --wq-accent-d: #ddbc7c;
+  --wq-accent-l: #e4cb96;
+  --wq-slate: #7d8ea6;
+  --wq-deep: #10161d;
+  --wq-hairline: rgba(236, 230, 217, 0.13);
+  --wq-hairline-strong: rgba(236, 230, 217, 0.27);
+}
+
+/* olive · the older wing */
+[data-palette='olive'] {
+  --wq-ground: #f4f2ee;
+  --wq-ground-2: #e9e5dd;
+  --wq-ground-3: #d8d3c8;
+  --wq-paper: #fbfaf7;
+  --wq-ink: #26262a;
+  --wq-ink-2: #3c3c42;
+  --wq-ink-3: #6a6a70;
+  --wq-accent: #a98a52;
+  --wq-accent-d: #8a6f3f;
+  --wq-accent-l: #c8ac74;
+  --wq-slate: #3d4b5c;
+  --wq-deep: #4b5341;
+  --wq-hairline: rgba(38, 38, 42, 0.16);
+  --wq-hairline-strong: rgba(38, 38, 42, 0.32);
+}
+
+.dark[data-palette='olive'] {
+  --wq-ground: #17181a;
+  --wq-ground-2: #1f2023;
+  --wq-ground-3: #2c2d31;
+  --wq-paper: #1f2023;
+  --wq-ink: #ece8df;
+  --wq-ink-2: #c9c4b8;
+  --wq-ink-3: #8f8a80;
+  --wq-accent: #b89658;
+  --wq-accent-d: #d0ab66;
+  --wq-accent-l: #d9bc80;
+  --wq-deep: #262b22;
+}
+
+@layer base {
+  html {
+    color-scheme: light;
+  }
+
+  html.dark {
+    color-scheme: dark;
+  }
+
+  body {
+    background-color: var(--wq-ground);
+    background-image:
+      radial-gradient(130% 90% at 50% -20%, rgba(255, 253, 246, 0.7), rgba(255, 253, 246, 0) 62%),
+      linear-gradient(180deg, rgba(28, 38, 55, 0.05), rgba(28, 38, 55, 0) 45%),
+      linear-gradient(0deg, rgba(198, 166, 100, 0.05), rgba(198, 166, 100, 0) 30%);
+    color: var(--wq-ink);
+    font-family: var(--wq-font-ui);
+  }
+
+  html.dark body {
+    background-image:
+      radial-gradient(130% 90% at 50% -20%, rgba(201, 169, 106, 0.08), rgba(0, 0, 0, 0) 60%),
+      linear-gradient(180deg, rgba(0, 0, 0, 0.28), rgba(0, 0, 0, 0) 50%),
+      linear-gradient(0deg, rgba(70, 88, 110, 0.12), rgba(0, 0, 0, 0) 35%);
+  }
+
+  /* paper grain */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    pointer-events: none;
+    opacity: 0.05;
+    background-repeat: repeat;
+    background-size: 140px 140px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  }
+
+  html.dark body::after {
+    opacity: 0.035;
+  }
+
+  ::selection {
+    background: var(--wq-accent);
+    color: var(--wq-ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--wq-accent-d);
+    outline-offset: 2px;
+  }
+
+  input,
+  textarea,
+  select {
+    caret-color: var(--wq-accent-d);
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--wq-ground);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--wq-ground-3);
+    border: 2px solid var(--wq-ground);
+  }
+}

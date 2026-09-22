@@ -1,0 +1,103 @@
+---
+import Base from '@/layouts/Base.astro';
+import SiteHeader from '@/components/world/SiteHeader.astro';
+import SiteFooter from '@/components/world/SiteFooter.astro';
+import Button from '@/components/starwind/button/Button.astro';
+import Badge from '@/components/starwind/badge/Badge.astro';
+import Separator from '@/components/starwind/separator/Separator.astro';
+import DrawnPiece from '@/components/world/DrawnPiece.astro';
+
+const swatches = [
+  { label: 'المادة', cls: 'bg-ground', note: 'أرض الصفحة' },
+  { label: 'الورق', cls: 'bg-paper', note: 'الأسطح المرتفعة' },
+  { label: 'الحبر', cls: 'bg-ink', note: 'النص والخطوط' },
+  { label: 'الشمبانيا', cls: 'bg-accent', note: 'الهوية والتفاعل' },
+  { label: 'الأردواز', cls: 'bg-slate', note: 'تأكيد ثانوي' },
+  { label: 'العمق', cls: 'bg-deep', note: 'داخل الفترينة' },
+  { label: 'الإشارة', cls: 'bg-signal', note: 'ما تجاوز الحد فقط' },
+];
+---
+
+<Base title="نظام التصميم — وقار">
+  <SiteHeader />
+  <main class="mx-auto max-w-6xl space-y-16 px-5 py-10 lg:px-8">
+    <header class="space-y-3">
+      <p class="font-data text-[0.8rem] tracking-[0.18em] text-accent-d">نظام التصميم</p>
+      <h1 class="font-display text-4xl leading-tight text-ink lg:text-5xl">لغة وقار</h1>
+      <p class="max-w-prose font-reading text-lg leading-loose text-ink-2">
+        نظام واحد، نظامان لونيان (أزرق حجري · زيتوني)، وليل دافئ لا أسود. الرموز أدناه هي المصدر،
+        وتُقرأ في Tailwind مباشرةً: <code class="font-data text-sm">bg-ground</code>,
+        <code class="font-data text-sm">text-ink</code>,
+        <code class="font-data text-sm">font-display</code>.
+      </p>
+    </header>
+
+    <section class="space-y-5">
+      <h2 class="font-display text-2xl text-ink">الألوان</h2>
+      <div class="grid grid-cols-2 gap-4 sm:grid-cols-4 lg:grid-cols-7">
+        {
+          swatches.map((swatch) => (
+            <div class="space-y-2 border border-hairline p-3">
+              <div class={`h-14 w-full border border-hairline ${swatch.cls}`} />
+              <p class="text-sm text-ink">{swatch.label}</p>
+              <p class="font-data text-[0.65rem] text-ink-3">{swatch.note}</p>
+            </div>
+          ))
+        }
+      </div>
+      <p class="text-sm text-ink-3">
+        جرّب الزرّين في الأعلى: <span class="text-ink">ليل/نهار</span> و
+        <span class="text-ink">أزرق حجري/زيتوني</span>.
+      </p>
+    </section>
+
+    <section class="space-y-5">
+      <h2 class="font-display text-2xl text-ink">الخطوط</h2>
+      <div class="space-y-6 border border-hairline bg-paper p-6">
+        <div class="space-y-1">
+          <p class="font-data text-[0.7rem] tracking-[0.12em] text-ink-3">NASEEM · عرض</p>
+          <p class="font-display text-4xl text-ink">وقار — كل قطعة تدخل بمعيار</p>
+        </div>
+        <Separator />
+        <div class="space-y-1">
+          <p class="font-data text-[0.7rem] tracking-[0.12em] text-ink-3">AMIRI · قراءة</p>
+          <p class="max-w-prose font-reading text-lg leading-loose text-ink-2">
+            لا شيء عاديّ هنا: الجودة والذوق في مرتبة واحدة، والسعر يُقاس على ما يستحقه.
+          </p>
+        </div>
+        <Separator />
+        <div class="space-y-1">
+          <p class="font-data text-[0.7rem] tracking-[0.12em] text-ink-3">PLEX · واجهة وأرقام</p>
+          <p class="text-base text-ink-2">نص الواجهة، الأزرار، والبيانات.</p>
+          <p class="font-data text-sm text-ink">WQ-0412 · ١٧٤ ر.س</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="space-y-5">
+      <h2 class="font-display text-2xl text-ink">العناصر</h2>
+      <div class="space-y-6 border border-hairline bg-paper p-6">
+        <div class="flex flex-wrap items-center gap-3">
+          <Button variant="primary" class="bg-accent text-ink hover:bg-accent-d hover:text-ink dark:bg-accent dark:text-ink">أضف إلى الطلب</Button>
+          <Button variant="outline">ثانوي</Button>
+          <Button variant="ghost">هادئ</Button>
+          <Button as="a" href="/sheet" variant="outline">رابط كزر</Button>
+        </div>
+        <Separator />
+        <div class="flex flex-wrap items-center gap-3">
+          <Badge variant="primary" class="bg-accent text-ink">مميّزة</Badge>
+          <Badge variant="outline" class="border-hairline-strong text-ink-3">WQ-0412</Badge>
+          <Badge variant="error" class="bg-signal text-ground">آخر قطعة</Badge>
+        </div>
+        <Separator />
+        <div class="flex items-center gap-6">
+          <DrawnPiece kind="cup" class="h-16 w-auto text-ink" />
+          <DrawnPiece kind="pen" class="h-16 w-auto text-ink" />
+          <DrawnPiece kind="textile" class="h-16 w-auto text-ink" />
+          <DrawnPiece kind="perfume" class="h-16 w-auto text-ink" />
+        </div>
+      </div>
+    </section>
+  </main>
+  <SiteFooter />
+</Base>

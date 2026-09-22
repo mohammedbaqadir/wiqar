@@ -1,0 +1,56 @@
+---
+import { url } from '@/lib/url';
+import Separator from '@/components/starwind/separator/Separator.astro';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="mt-20 border-t border-hairline-strong bg-ground-2">
+  <div class="mx-auto grid max-w-6xl grid-cols-1 gap-8 px-5 py-12 lg:grid-cols-3 lg:px-8">
+    <div class="space-y-4">
+      <h3
+        class="relative pb-2 font-display text-lg text-ink after:absolute after:bottom-0 after:start-0 after:h-[2px] after:w-5 after:bg-accent"
+      >
+        وقار
+      </h3>
+      <p class="max-w-sm font-reading text-base leading-loose text-ink-2">
+        قاعة المقتنيات: كل قطعة تدخل بمعيار واحد — الجودة والذوق والقيمة في مستوى واحد. لا شيء عاديّ
+        هنا.
+      </p>
+    </div>
+
+    <div class="space-y-3">
+      <h3
+        class="relative pb-2 font-display text-lg text-ink after:absolute after:bottom-0 after:start-0 after:h-[2px] after:w-5 after:bg-accent"
+      >
+        تواصل
+      </h3>
+      <ul class="space-y-2 font-data text-sm text-ink-2" dir="ltr">
+        <li>support@wiqar.sa</li>
+        <li>+966 53 686 2097</li>
+      </ul>
+    </div>
+
+    <div class="space-y-3">
+      <h3
+        class="relative pb-2 font-display text-lg text-ink after:absolute after:bottom-0 after:start-0 after:h-[2px] after:w-5 after:bg-accent"
+      >
+        في القاعة
+      </h3>
+      <ul class="space-y-2 text-sm text-ink-2">
+        <li><a href={url('/catalog')} class="transition-colors hover:text-ink hover:underline hover:decoration-accent hover:decoration-2 hover:underline-offset-4">الفهرس</a></li>
+        <li><a href={url('/sheet')} class="transition-colors hover:text-ink hover:underline hover:decoration-accent hover:decoration-2 hover:underline-offset-4">بطاقة قطعة</a></li>
+        <li><a href={url('/guide')} class="transition-colors hover:text-ink hover:underline hover:decoration-accent hover:decoration-2 hover:underline-offset-4">نظام التصميم</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <Separator class="mx-auto max-w-6xl" />
+
+  <div
+    class="mx-auto flex max-w-6xl flex-col items-center justify-between gap-2 px-5 py-5 text-center font-data text-[0.7rem] tracking-[0.06em] text-ink-3 sm:flex-row lg:px-8"
+  >
+    <span>عرض تصميميّ — لا يعمل كمتجر، والمحتوى تجريبيّ.</span>
+    <span dir="ltr">© {year} MAY ỌI</span>
+  </div>
+</footer>

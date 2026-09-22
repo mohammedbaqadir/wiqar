@@ -1,0 +1,107 @@
+---
+import { url } from '@/lib/url';
+import Button from '@/components/starwind/button/Button.astro';
+
+const links = [
+  { href: url('/'), label: 'القاعة' },
+  { href: url('/catalog'), label: 'الفهرس' },
+  { href: url('/sheet'), label: 'بطاقة قطعة' },
+  { href: url('/guide'), label: 'النظام' },
+];
+---
+
+<header class="relative z-30">
+  <div class="border-b border-hairline bg-ground-2">
+    <div
+      class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-2 text-[0.8125rem] text-ink-3 lg:px-8"
+    >
+      <span class="font-data tracking-[0.08em]">عرض تصميميّ · محتوى تجريبي</span>
+      <div class="flex items-center gap-2 text-xs">
+        <Button id="wq-palette-toggle" variant="outline" size="sm" class="!h-7 !px-3 !text-xs"
+          >أزرق حجري</Button
+        >
+        <Button id="wq-theme-toggle" variant="outline" size="sm" class="!h-7 !px-3 !text-xs">ليل</Button>
+      </div>
+    </div>
+  </div>
+
+  <div class="border-b border-hairline-strong bg-ground">
+    <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-5 px-5 py-4 lg:px-8">
+      <a href={url('/')} class="flex items-baseline gap-3">
+        <span class="font-display text-3xl leading-none text-ink">وقار</span>
+        <span class="hidden font-data text-[0.68rem] tracking-[0.18em] text-ink-3 sm:inline" dir="ltr"
+          >THE ACCESSION ROOM</span
+        >
+      </a>
+
+      <nav class="flex items-center gap-5 text-sm" aria-label="التنقل">
+        {
+          links.map((link) => (
+            <a
+              href={link.href}
+              class="text-ink-2 transition-colors hover:text-ink hover:underline hover:decoration-accent hover:decoration-2 hover:underline-offset-4"
+            >
+              {link.label}
+            </a>
+          ))
+        }
+        <a
+          href={url('/sheet')}
+          class="ms-1 inline-flex items-center gap-2 rounded-sm border border-hairline-strong px-2.5 py-1.5 text-ink transition-colors hover:border-accent"
+          aria-label="السلة"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="size-4"
+            aria-hidden="true"
+          >
+            <path d="M6 8h12l-1 11H7z" />
+            <path d="M9 8a3 3 0 0 1 6 0" />
+          </svg>
+          <span class="font-data text-[0.68rem] leading-none tracking-[0.06em] text-ink">٣</span>
+        </a>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<script>
+  const root = document.documentElement;
+  const themeBtn = document.getElementById('wq-theme-toggle');
+  const paletteBtn = document.getElementById('wq-palette-toggle');
+
+  const sync = () => {
+    if (themeBtn) themeBtn.textContent = root.classList.contains('dark') ? 'نهار' : 'ليل';
+    if (paletteBtn) {
+      paletteBtn.textContent = root.getAttribute('data-palette') === 'olive' ? 'زيتوني' : 'أزرق حجري';
+    }
+  };
+
+  themeBtn?.addEventListener('click', () => {
+    const dark = root.classList.toggle('dark');
+    try {
+      localStorage.setItem('wq-theme', dark ? 'dark' : 'light');
+    } catch (error) {}
+    sync();
+  });
+
+  paletteBtn?.addEventListener('click', () => {
+    const olive = root.getAttribute('data-palette') === 'olive';
+    if (olive) {
+      root.removeAttribute('data-palette');
+    } else {
+      root.setAttribute('data-palette', 'olive');
+    }
+    try {
+      localStorage.setItem('wq-palette', olive ? 'bluestone' : 'olive');
+    } catch (error) {}
+    sync();
+  });
+
+  sync();
+</script>

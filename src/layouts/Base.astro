@@ -1,0 +1,41 @@
+---
+import { url } from '@/lib/url';
+import '@/styles/starwind.css';
+import '@/styles/world.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'وقار — عرض تصميمي',
+  description = 'عرض تصميمي لعالم وقار: قاعة المقتنيات — عرض ساكن لا يعمل كمتجر.',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="ar" dir="rtl" class="scroll-smooth">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" href={url('/favicon.svg')} type="image/svg+xml" />
+    <script is:inline>
+      (function () {
+        try {
+          if (localStorage.getItem('wq-theme') === 'dark') {
+            document.documentElement.classList.add('dark');
+          }
+          if (localStorage.getItem('wq-palette') === 'olive') {
+            document.documentElement.setAttribute('data-palette', 'olive');
+          }
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body class="group/page min-h-dvh font-sans antialiased">
+    <slot />
+  </body>
+</html>
