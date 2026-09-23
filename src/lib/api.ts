@@ -37,6 +37,8 @@ export interface ApiProduct {
   category_id: number;
   origin: string;
   standard: string;
+  /** Shopper-facing synonyms: the forms people type that the copy doesn't carry. */
+  keywords: string[];
   image: ApiImage;
   images: ApiImage[];
 }
