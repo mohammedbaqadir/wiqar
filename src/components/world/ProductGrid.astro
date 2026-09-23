@@ -1,14 +1,27 @@
 ---
-import { imageSrc, isLowStock, isOnSale, lowStockLabel, type ApiProduct } from '@/lib/api';
+import {
+  getCategories,
+  imageSrc,
+  isLowStock,
+  isOnSale,
+  lowStockLabel,
+  type ApiProduct,
+} from '@/lib/api';
 import { money } from '@/lib/format';
+import { normalize, searchText } from '@/lib/search';
 import { url } from '@/lib/url';
 
 interface Props {
   products: ApiProduct[];
   title?: string;
+  /** Only the search page needs the text the client filters on. */
+  searchable?: boolean;
 }
 
-const { products, title } = Astro.props;
+const { products, title, searchable = false } = Astro.props;
+
+const categories = searchable ? await getCategories() : [];
+const roomOf = (id: number) => categories.find((category) => category.id === id)?.name ?? '';
 ---
 
 <section class="mx-auto max-w-6xl px-5 py-12 lg:px-8 lg:py-16">
@@ -29,7 +42,25 @@ const { products, title } = Astro.props;
   <div class="grid grid-cols-2 gap-x-4 gap-y-9 md:grid-cols-3 lg:grid-cols-4 lg:gap-x-6">
     {
       products.map((product) => (
-        <a href={url(`/product/${product.slug}`)} class="group flex flex-col">
+        <a
+          href={url(`/product/${product.slug}`)}
+          class="group flex flex-col"
+          data-product-card={searchable ? '' : undefined}
+          data-search={
+            searchable
+              ? searchText(
+                  product.name,
+                  product.subtitle,
+                  product.origin,
+                  product.standard,
+                  product.description,
+                  product.sku,
+                  roomOf(product.category_id)
+                )
+              : undefined
+          }
+          data-name={searchable ? normalize(product.name) : undefined}
+        >
           <div class="relative aspect-square w-full overflow-hidden bg-exhibit-2">
             <img
               src={imageSrc(product.image)}

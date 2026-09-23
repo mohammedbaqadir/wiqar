@@ -1,0 +1,156 @@
+---
+import Base from '@/layouts/Base.astro';
+import SiteHeader from '@/components/world/SiteHeader.astro';
+import SiteFooter from '@/components/world/SiteFooter.astro';
+import ProductGrid from '@/components/world/ProductGrid.astro';
+import { getProducts } from '@/lib/api';
+import { url } from '@/lib/url';
+
+const products = await getProducts();
+---
+
+<Base title="البحث — وقار" description="ابحث في مقتنيات وقار بالاسم أو الرقم أو الوصف.">
+  <SiteHeader />
+
+  <main>
+    <header class="border-b border-hairline bg-exhibit-2">
+      <div class="mx-auto max-w-6xl px-5 py-10 lg:px-8 lg:py-12">
+        <p class="font-data text-[0.75rem] tracking-[0.18em] text-accent-d">البحث</p>
+        <h1
+          data-search-heading
+          class="mt-2 font-display text-4xl leading-tight text-room-ink lg:text-5xl"
+        >
+          ابحث في المتجر
+        </h1>
+
+        <form
+          action={url('/search')}
+          method="get"
+          role="search"
+          class="mt-6 flex max-w-md items-center gap-3 border border-hairline bg-exhibit px-3.5 py-2.5"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            class="size-4 shrink-0 text-room-ink-3"
+            aria-hidden="true"
+          >
+            <circle cx="11" cy="11" r="6"></circle>
+            <path d="M20 20l-4.2-4.2"></path>
+          </svg>
+          <input
+            type="search"
+            name="q"
+            data-search-input
+            autocomplete="off"
+            placeholder="اكتب اسم قطعة أو رقمها"
+            aria-label="ابحث في المتجر"
+            class="w-full bg-transparent text-sm text-ink placeholder:text-room-ink-3 focus:outline-none"
+          />
+          <button type="submit" class="shrink-0 text-sm text-room-ink-2 transition-colors hover:text-room-ink">
+            ابحث
+          </button>
+        </form>
+
+        <p data-search-count class="mt-4 font-data text-[0.8rem] text-room-ink-2"></p>
+      </div>
+    </header>
+
+    <script is:inline>
+      (function () {
+        var query = new URLSearchParams(location.search).get('q');
+        if (!query) return;
+        document.documentElement.setAttribute('data-searching', '');
+        var input = document.querySelector('[data-search-input]');
+        if (input) input.value = query;
+      })();
+    </script>
+
+    <div data-search-results>
+      <ProductGrid products={products} searchable />
+    </div>
+
+    <div data-search-empty class="mx-auto hidden max-w-6xl px-5 py-20 text-center lg:px-8">
+      <p class="font-display text-2xl text-room-ink">
+        لا نتائج لـ «<span data-search-empty-query></span>»
+      </p>
+      <p class="mx-auto mt-3 max-w-md font-reading text-base leading-loose text-room-ink-2">
+        جرّب كلمة أقصر، أو ابحث بالرقم المكتوب على القطعة، أو تصفّح المتجر كاملًا.
+      </p>
+      <a
+        href={url('/catalog')}
+        class="mt-6 inline-block border border-hairline px-5 py-2.5 text-sm text-room-ink transition-colors hover:bg-exhibit"
+      >
+        تصفّح المتجر
+      </a>
+    </div>
+  </main>
+
+  <SiteFooter />
+</Base>
+
+<style is:global>
+  /* Set before the grid paints, cleared once the results are filtered. */
+  html[data-searching] [data-search-results] {
+    visibility: hidden;
+  }
+</style>
+
+<script>
+  import { toArabicDigits } from '@/lib/format';
+  import { scoreMatch } from '@/lib/search';
+
+  const results = document.querySelector<HTMLElement>('[data-search-results]');
+  const cards = Array.from(document.querySelectorAll<HTMLElement>('[data-product-card]'));
+  const input = document.querySelector<HTMLInputElement>('[data-search-input]');
+  const heading = document.querySelector<HTMLElement>('[data-search-heading]');
+  const countEl = document.querySelector<HTMLElement>('[data-search-count]');
+  const emptyEl = document.querySelector<HTMLElement>('[data-search-empty]');
+  const emptyQueryEl = document.querySelector<HTMLElement>('[data-search-empty-query]');
+
+  if (results && cards.length > 0) {
+    const apply = (raw: string) => {
+      const query = raw.trim();
+      document.documentElement.removeAttribute('data-searching');
+
+      let shown = 0;
+      cards.forEach((card) => {
+        const { matched, score } = scoreMatch(
+          card.dataset.search ?? '',
+          card.dataset.name ?? '',
+          query
+        );
+        card.style.display = matched ? '' : 'none';
+        card.style.order = matched ? String(-score) : '';
+        if (matched) shown += 1;
+      });
+
+      const searching = query.length > 0;
+
+      if (heading) heading.textContent = searching ? 'نتائج البحث' : 'ابحث في المتجر';
+      if (countEl) {
+        countEl.textContent = searching
+          ? `${toArabicDigits(shown)} ${shown === 1 ? 'نتيجة' : 'نتائج'} لـ «${query}»`
+          : '';
+      }
+      if (emptyEl) {
+        const nothingFound = searching && shown === 0;
+        emptyEl.style.display = nothingFound ? 'block' : 'none';
+        if (nothingFound && emptyQueryEl) emptyQueryEl.textContent = query;
+      }
+
+      /* Keep the address shareable while typing. */
+      const next = new URL(location.href);
+      if (searching) next.searchParams.set('q', query);
+      else next.searchParams.delete('q');
+      history.replaceState(null, '', next);
+    };
+
+    input?.addEventListener('input', () => apply(input.value));
+
+    apply(new URLSearchParams(location.search).get('q') ?? '');
+  }
+</script>

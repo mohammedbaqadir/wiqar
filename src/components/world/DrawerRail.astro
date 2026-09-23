@@ -15,10 +15,10 @@ const rooms = categories
 ---
 
 <nav class="relative z-20 mx-auto max-w-6xl px-5 pb-10 lg:px-8" aria-label="أقسام المتجر">
-  <div class="flex overflow-x-auto border border-room [scrollbar-width:none]">
+  <div class="flex overflow-x-auto border border-hairline [scrollbar-width:none]">
     {
       rooms.map(({ category, items }) => (
-        <div class="group/drawer relative min-w-32 flex-1 border-room [&+&]:border-s" data-drawer>
+        <div class="group/drawer relative min-w-32 flex-1 border-hairline [&+&]:border-s" data-drawer>
           <button
             type="button"
             data-front
