@@ -98,7 +98,7 @@ const availability = product.is_out_of_stock
           }
         </div>
 
-        <div class="flex flex-wrap items-center gap-4">
+        <div data-buy class="flex flex-wrap items-center gap-4">
           <label class="flex items-center gap-3 border border-room bg-exhibit px-3 py-2">
             <span class="text-sm text-room-ink-2">الكمية</span>
             <input
@@ -113,9 +113,11 @@ const availability = product.is_out_of_stock
             type="button"
             data-add-to-cart
             data-product-id={product.id}
+            data-product-slug={product.slug}
             data-product-name={product.name}
             data-product-price={product.price}
             data-product-image={imageSrc(product.image)}
+            data-product-stock={product.quantity ?? ''}
           >
             أضف إلى السلة
           </Button>

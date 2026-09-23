@@ -44,7 +44,10 @@ const rooms = categories
             </svg>
           </button>
 
-          <div class="absolute inset-x-0 top-full z-30 hidden flex-col gap-2 border border-accent bg-deep p-3.5 shadow-[0_18px_40px_rgba(0,0,0,0.35)] group-data-[open]/drawer:flex">
+          <div
+            data-panel
+            class="absolute inset-x-0 top-full z-30 hidden flex-col gap-2 border border-accent bg-deep p-3.5 shadow-[0_18px_40px_rgba(0,0,0,0.35)]"
+          >
             {items.map((item) => (
               <a
                 href={url(`/product/${item.slug}`)}

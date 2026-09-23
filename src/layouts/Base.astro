@@ -1,6 +1,7 @@
 ---
 import '@/styles/starwind.css';
 import '@/styles/world.css';
+import CartDrawer from '@/components/world/CartDrawer.astro';
 import { materials, themeVars } from '@/data/theme';
 import { url } from '@/lib/url';
 
@@ -30,5 +31,6 @@ const themeCss = `:root{${themeVars(materials)}}`;
   </head>
   <body class="group/page min-h-dvh bg-room font-sans text-room-ink antialiased">
     <slot />
+    <CartDrawer />
   </body>
 </html>
