@@ -97,15 +97,10 @@
   }
 }
 
-/* ── the shop's drawers ───────────────────────────────────────
-   One source of truth for the open state: data-open on the
-   container. Written as plain rules because two Tailwind utilities
-   setting the same property fight over the cascade, and the base
-   one can win. */
-
-[data-drawer][data-open] [data-panel] {
-  display: flex;
-}
+/* ── the cart drawer ──────────────────────────────────────────
+   The open state lives on the container. Plain rules because two
+   Tailwind utilities setting the same property fight over the
+   cascade, and the base one can win. */
 
 [data-cart-panel] {
   transform: translateX(-100%);
@@ -116,8 +111,40 @@
   transform: translateX(0);
 }
 
+/* A filtered list (search, catalog) stays hidden until the client
+   has run, so arriving from a shared link never flashes the whole
+   catalogue first. */
+html[data-filtering] [data-client-filter] {
+  visibility: hidden;
+}
+
+/* ── quick add on product cards ───────────────────────────────
+   Only where a pointer can hover, revealed on hover or keyboard
+   focus. Plain rules so the reveal does not depend on which
+   Tailwind utility happens to come last. */
+
+[data-quick-add] {
+  display: none;
+}
+
+@media (pointer: fine) {
+  [data-quick-add] {
+    display: flex;
+    opacity: 0;
+  }
+
+  [data-product-card]:hover [data-quick-add],
+  [data-product-card]:focus-within [data-quick-add] {
+    opacity: 1;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   [data-cart-panel] {
+    transition: none;
+  }
+
+  [data-quick-add] {
     transition: none;
   }
 }

@@ -25,7 +25,7 @@ import { url } from '@/lib/url';
         type="button"
         data-cart-close
         aria-label="إغلاق السلة"
-        class="grid size-9 place-items-center text-ink transition-colors hover:text-accent-d"
+        class="grid size-11 place-items-center text-ink transition-colors hover:text-accent-d"
       >
         <svg
           viewBox="0 0 24 24"
@@ -50,7 +50,7 @@ import { url } from '@/lib/url';
       <p class="text-sm leading-relaxed text-ink-2">لم تُضف أي قطعة بعد.</p>
       <a
         href={url('/catalog')}
-        class="mt-2 border border-hairline-ink px-4 py-2 text-sm text-ink transition-colors hover:bg-exhibit-2"
+        class="mt-2 inline-flex min-h-11 items-center border border-hairline-ink px-4 text-sm text-ink transition-colors hover:bg-exhibit-2"
       >
         تصفّح المتجر
       </a>
@@ -88,7 +88,7 @@ import { url } from '@/lib/url';
       <button
         type="button"
         data-cart-close-continue
-        class="border border-hairline-ink px-4 py-2.5 text-sm text-ink transition-colors hover:bg-exhibit-2"
+        class="min-h-11 border border-hairline-ink px-4 text-sm text-ink transition-colors hover:bg-exhibit-2"
       >
         متابعة التسوّق
       </button>
@@ -110,7 +110,7 @@ import { url } from '@/lib/url';
         <button
           type="button"
           data-line-remove
-          class="shrink-0 font-data text-[0.7rem] text-ink-3 transition-colors hover:text-signal"
+          class="-me-1 inline-flex min-h-11 shrink-0 items-center px-1.5 font-data text-[0.7rem] text-ink-3 transition-colors hover:text-signal"
         >
           إزالة
         </button>
@@ -121,7 +121,7 @@ import { url } from '@/lib/url';
             type="button"
             data-line-inc
             aria-label="زيادة الكمية"
-            class="size-8 text-ink transition-colors hover:bg-exhibit-2 disabled:opacity-35"
+            class="size-11 text-ink transition-colors hover:bg-exhibit-2 disabled:opacity-35"
           >
             +
           </button>
@@ -130,7 +130,7 @@ import { url } from '@/lib/url';
             type="button"
             data-line-dec
             aria-label="إنقاص الكمية"
-            class="size-8 text-ink transition-colors hover:bg-exhibit-2"
+            class="size-11 text-ink transition-colors hover:bg-exhibit-2"
           >
             −
           </button>

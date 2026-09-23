@@ -35,7 +35,7 @@
       "origin": "خزف يدوي",
       "standard": "جدار رقيق، حافة مضبوطة، وحجم يقيس القهوة لا الكوب.",
       "image": { "url": "photos/mug.jpg", "alt": "فنجان قهوة خزفي" },
-      "images": [{ "url": "photos/mug.jpg", "alt": "فنجان قهوة خزفي" }]
+      "images": [{ "url": "photos/mug.jpg", "alt": "فنجان قهوة خزفي" }, { "url": "photos/mug-2.jpg", "alt": "صورة أخرى للقطعة" }]
     },
     {
       "id": 100506,
@@ -54,7 +54,7 @@
       "origin": "خشب زيتون",
       "standard": "تجويف واحد متصل، وأثر يد بلا حرارة صنفرة.",
       "image": { "url": "photos/bowl.jpg", "alt": "هاون خشب زيتون" },
-      "images": [{ "url": "photos/bowl.jpg", "alt": "هاون خشب زيتون" }]
+      "images": [{ "url": "photos/bowl.jpg", "alt": "هاون خشب زيتون" }, { "url": "photos/bowl-2.jpg", "alt": "صورة أخرى للقطعة" }]
     },
     {
       "id": 100288,
@@ -73,7 +73,7 @@
       "origin": "تصنيع أوروبي",
       "standard": "خط ناعم لا يخدش الورق، وجسم يوازن اليد.",
       "image": { "url": "photos/pen.jpg", "alt": "طقم أقلام مكتب" },
-      "images": [{ "url": "photos/pen.jpg", "alt": "طقم أقلام مكتب" }]
+      "images": [{ "url": "photos/pen.jpg", "alt": "طقم أقلام مكتب" }, { "url": "photos/pen-2.jpg", "alt": "صورة أخرى للقطعة" }]
     },
     {
       "id": 100731,
@@ -92,7 +92,7 @@
       "origin": "جلد طبيعي",
       "standard": "ورق يتحمّل الحبر، وجلد يزداد جمالًا كلما استُعمل.",
       "image": { "url": "photos/notebook.jpg", "alt": "دفتر ملاحظات" },
-      "images": [{ "url": "photos/notebook.jpg", "alt": "دفتر ملاحظات" }]
+      "images": [{ "url": "photos/notebook.jpg", "alt": "دفتر ملاحظات" }, { "url": "photos/notebook-2.jpg", "alt": "صورة أخرى للقطعة" }]
     },
     {
       "id": 100153,
@@ -130,7 +130,7 @@
       "origin": "تركيب فرنسي",
       "standard": "قاعدة هادئة تبقى بعد ساعتين، بلا صراخ.",
       "image": { "url": "photos/perfume.jpg", "alt": "قارورة عطر" },
-      "images": [{ "url": "photos/perfume.jpg", "alt": "قارورة عطر" }]
+      "images": [{ "url": "photos/perfume.jpg", "alt": "قارورة عطر" }, { "url": "photos/perfume-2.jpg", "alt": "صورة أخرى للقطعة" }]
     },
     {
       "id": 100602,
@@ -149,7 +149,7 @@
       "origin": "جلد مدبوغ نباتيًا",
       "standard": "خياطة يد واحدة، وحواشٍ تُصقل لا تُلصق.",
       "image": { "url": "photos/wallet.jpg", "alt": "محفظة جلد" },
-      "images": [{ "url": "photos/wallet.jpg", "alt": "محفظة جلد" }]
+      "images": [{ "url": "photos/wallet.jpg", "alt": "محفظة جلد" }, { "url": "photos/wallet-2.jpg", "alt": "صورة أخرى للقطعة" }]
     },
     {
       "id": 100880,
@@ -168,7 +168,7 @@
       "origin": "جلد إيطالي",
       "standard": "حجم يومي، وقاعدة تثبت وحدها.",
       "image": { "url": "photos/bag.jpg", "alt": "حقيبة كتف جلدية" },
-      "images": [{ "url": "photos/bag.jpg", "alt": "حقيبة كتف جلدية" }]
+      "images": [{ "url": "photos/bag.jpg", "alt": "حقيبة كتف جلدية" }, { "url": "photos/bag-2.jpg", "alt": "صورة أخرى للقطعة" }]
     },
     {
       "id": 100934,
@@ -206,7 +206,7 @@
       "origin": "حركة ميكانيكية",
       "standard": "ميناء بلا زخرفة، وعقارب تقرأ في لمحة.",
       "image": { "url": "photos/watch.jpg", "alt": "ساعة يد" },
-      "images": [{ "url": "photos/watch.jpg", "alt": "ساعة يد" }]
+      "images": [{ "url": "photos/watch.jpg", "alt": "ساعة يد" }, { "url": "photos/watch-2.jpg", "alt": "صورة أخرى للقطعة" }]
     },
     {
       "id": 100480,
@@ -225,7 +225,7 @@
       "origin": "صوتيات",
       "standard": "تعزل الشارع دون أن تعزلك عن الناس.",
       "image": { "url": "photos/earbuds.jpg", "alt": "سماعات لاسلكية" },
-      "images": [{ "url": "photos/earbuds.jpg", "alt": "سماعات لاسلكية" }]
+      "images": [{ "url": "photos/earbuds.jpg", "alt": "سماعات لاسلكية" }, { "url": "photos/earbuds-2.jpg", "alt": "صورة أخرى للقطعة" }]
     },
     {
       "id": 100620,
@@ -244,7 +244,7 @@
       "origin": "طاولة دوّارة",
       "standard": "طاولة تدور بثبات، وذراع تُضبط بيدك.",
       "image": { "url": "photos/turntable.jpg", "alt": "مسجّل أسطوانات" },
-      "images": [{ "url": "photos/turntable.jpg", "alt": "مسجّل أسطوانات" }]
+      "images": [{ "url": "photos/turntable.jpg", "alt": "مسجّل أسطوانات" }, { "url": "photos/turntable-2.jpg", "alt": "صورة أخرى للقطعة" }]
     },
     {
       "id": 101450,
@@ -263,7 +263,7 @@
       "origin": "كاميرا أفلام",
       "standard": "تصوير ببطء: لكل صورة ثمنها، فتتعلّم أن تنظر قبل أن تضغط.",
       "image": { "url": "photos/camera.jpg", "alt": "كاميرا أفلام" },
-      "images": [{ "url": "photos/camera.jpg", "alt": "كاميرا أفلام" }]
+      "images": [{ "url": "photos/camera.jpg", "alt": "كاميرا أفلام" }, { "url": "photos/camera-2.jpg", "alt": "صورة أخرى للقطعة" }]
     },
     {
       "id": 100240,
@@ -282,7 +282,7 @@
       "origin": "فولاذ دمشقي",
       "standard": "تفتح بيد واحدة، وتبقى في الجيب بلا ثقل.",
       "image": { "url": "photos/knife.jpg", "alt": "مطواة جيب" },
-      "images": [{ "url": "photos/knife.jpg", "alt": "مطواة جيب" }]
+      "images": [{ "url": "photos/knife.jpg", "alt": "مطواة جيب" }, { "url": "photos/knife-2.jpg", "alt": "صورة أخرى للقطعة" }]
     },
     {
       "id": 100990,
@@ -301,7 +301,7 @@
       "origin": "نحاس مصقول",
       "standard": "ضوء يقع على الورق، ولا يقع على العين.",
       "image": { "url": "photos/lamp.jpg", "alt": "مصباح مكتب نحاسي" },
-      "images": [{ "url": "photos/lamp.jpg", "alt": "مصباح مكتب نحاسي" }]
+      "images": [{ "url": "photos/lamp.jpg", "alt": "مصباح مكتب نحاسي" }, { "url": "photos/lamp-2.jpg", "alt": "صورة أخرى للقطعة" }]
     },
     {
       "id": 101900,

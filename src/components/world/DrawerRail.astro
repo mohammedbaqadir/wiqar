@@ -1,6 +1,6 @@
 ---
 import { getCategories, getProducts } from '@/lib/api';
-import { money, toArabicDigits } from '@/lib/format';
+import { toArabicDigits } from '@/lib/format';
 import { url } from '@/lib/url';
 
 const categories = await getCategories();
@@ -9,98 +9,26 @@ const products = await getProducts();
 const rooms = categories
   .map((category) => ({
     category,
-    items: products.filter((product) => product.category_id === category.id),
+    count: products.filter((product) => product.category_id === category.id).length,
   }))
-  .filter((room) => room.items.length > 0);
+  .filter((room) => room.count > 0);
 ---
 
-<nav class="relative z-20 mx-auto max-w-6xl px-5 pb-10 lg:px-8" aria-label="أقسام المتجر">
+<nav class="mx-auto max-w-6xl px-5 pb-10 lg:px-8" aria-label="أقسام المتجر">
   <div class="flex overflow-x-auto border border-hairline [scrollbar-width:none]">
     {
-      rooms.map(({ category, items }) => (
-        <div class="group/drawer relative min-w-32 flex-1 border-hairline [&+&]:border-s" data-drawer>
-          <button
-            type="button"
-            data-front
-            aria-expanded="false"
-            class="flex w-full items-center gap-2 bg-room px-3.5 py-3 text-start text-sm whitespace-nowrap text-room-ink transition-colors hover:bg-room-2 group-data-[open]/drawer:bg-deep group-data-[open]/drawer:text-deep-ink"
-          >
-            <span class="h-0.5 w-5 bg-accent" />
-            <span class="font-medium">{category.name}</span>
-            <span class="ms-auto font-data text-[0.6rem] opacity-60" dir="ltr">
-              {toArabicDigits(items.length)}
-            </span>
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.6"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class="size-3.5 opacity-60 transition-transform group-data-[open]/drawer:rotate-180"
-              aria-hidden="true"
-            >
-              <path d="M6 9l6 6 6-6" />
-            </svg>
-          </button>
-
-          <div
-            data-panel
-            class="absolute inset-x-0 top-full z-30 hidden flex-col gap-2 border border-accent bg-deep p-3.5 shadow-[0_18px_40px_rgba(0,0,0,0.35)]"
-          >
-            {items.map((item) => (
-              <a
-                href={url(`/product/${item.slug}`)}
-                class="flex items-baseline justify-between gap-3 text-sm text-deep-ink transition-colors hover:text-accent-l"
-              >
-                <span>{item.name}</span>
-                <span class="font-data text-[0.65rem] text-deep-ink-2">
-                  {money(item.price)}
-                </span>
-              </a>
-            ))}
-            <a
-              href={url('/catalog')}
-              class="border-t border-deep-ink/15 pt-2 text-sm font-medium text-deep-ink transition-colors hover:text-accent-l"
-            >
-              المتجر كاملًا
-            </a>
-          </div>
-        </div>
+      rooms.map(({ category, count }) => (
+        <a
+          href={url(`/catalog?category=${category.slug}`)}
+          class="flex min-h-11 min-w-32 flex-1 items-center gap-2 border-hairline px-3.5 text-sm whitespace-nowrap text-room-ink transition-colors hover:bg-room-2 [&+&]:border-s"
+        >
+          <span class="h-0.5 w-5 bg-accent" aria-hidden="true" />
+          <span class="font-medium">{category.name}</span>
+          <span class="ms-auto font-data text-[0.6rem] text-room-ink-3" dir="ltr">
+            {toArabicDigits(count)}
+          </span>
+        </a>
       ))
     }
   </div>
 </nav>
-
-<script>
-  const rail = document.querySelector<HTMLElement>('[aria-label="أقسام المتجر"]');
-
-  if (rail) {
-    const closeAll = () => {
-      rail.querySelectorAll<HTMLElement>('[data-drawer]').forEach((drawer) => {
-        drawer.removeAttribute('data-open');
-        drawer.querySelector('button')?.setAttribute('aria-expanded', 'false');
-      });
-    };
-
-    rail.addEventListener('click', (event) => {
-      const button = (event.target as HTMLElement).closest('[data-front]');
-      if (!button) return;
-      const drawer = button.parentElement as HTMLElement;
-      const wasOpen = drawer.hasAttribute('data-open');
-      closeAll();
-      if (!wasOpen) {
-        drawer.setAttribute('data-open', '');
-        button.setAttribute('aria-expanded', 'true');
-      }
-    });
-
-    document.addEventListener('click', (event) => {
-      if (!rail.contains(event.target as Node)) closeAll();
-    });
-
-    document.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape') closeAll();
-    });
-  }
-</script>

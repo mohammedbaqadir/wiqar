@@ -42,7 +42,7 @@ const links = [
           action={url('/search')}
           method="get"
           role="search"
-          class="hidden items-center gap-2 border-b border-hairline pb-1 sm:flex"
+          class="hidden items-center gap-2 border-b border-hairline pb-1 focus-within:border-outline focus-within:ring-2 focus-within:ring-outline/40 sm:flex"
         >
           <svg
             viewBox="0 0 24 24"
@@ -62,13 +62,13 @@ const links = [
             autocomplete="off"
             placeholder="ابحث"
             aria-label="ابحث في المتجر"
-            class="w-24 bg-transparent text-sm text-room-ink placeholder:text-room-ink-3 focus:outline-none lg:w-36"
+            class="min-h-11 w-24 bg-transparent text-sm text-room-ink placeholder:text-room-ink-3 lg:w-36"
           />
         </form>
 
         <a
           href={url('/search')}
-          class="text-room-ink-2 transition-colors hover:text-room-ink sm:hidden"
+          class="inline-flex min-h-11 min-w-11 items-center justify-center text-room-ink-2 transition-colors hover:text-room-ink sm:hidden"
           aria-label="البحث"
         >
           <svg
@@ -88,7 +88,7 @@ const links = [
         <button
           type="button"
           data-cart-toggle
-          class="inline-flex items-center gap-2 text-room-ink transition-colors hover:text-accent-d"
+          class="inline-flex min-h-11 min-w-11 items-center justify-center gap-2 text-room-ink transition-colors hover:text-accent-d"
           aria-label="السلة"
         >
           <svg
