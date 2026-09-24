@@ -1,0 +1,50 @@
+---
+import { getCategories, getProducts } from '@/lib/api';
+import { toArabicDigits } from '@/lib/format';
+import { url } from '@/lib/url';
+
+interface Props {
+  /** Slug of the category being viewed, so it can be marked as current. */
+  current?: string;
+}
+
+const { current } = Astro.props;
+
+const categories = await getCategories();
+const products = await getProducts();
+
+const rooms = categories
+  .map((category) => ({
+    category,
+    count: products.filter((product) => product.category_id === category.id).length,
+  }))
+  .filter((room) => room.count > 0);
+---
+
+<nav class="flex flex-wrap gap-2" aria-label="الأقسام">
+  <a
+    href={url('/catalog')}
+    aria-current={current ? undefined : 'page'}
+    class="inline-flex min-h-11 items-center gap-2 border border-hairline px-3.5 text-sm text-room-ink-2 transition-colors hover:border-outline hover:text-room-ink aria-current:border-outline aria-current:bg-exhibit aria-current:text-room-ink"
+  >
+    الكل
+    <span class="font-data text-[0.65rem] text-room-ink-3" dir="ltr">
+      {toArabicDigits(products.length)}
+    </span>
+  </a>
+
+  {
+    rooms.map(({ category, count }) => (
+      <a
+        href={url(`/category/${category.slug}`)}
+        aria-current={current === category.slug ? 'page' : undefined}
+        class="inline-flex min-h-11 items-center gap-2 border border-hairline px-3.5 text-sm text-room-ink-2 transition-colors hover:border-outline hover:text-room-ink aria-current:border-outline aria-current:bg-exhibit aria-current:text-room-ink"
+      >
+        {category.name}
+        <span class="font-data text-[0.65rem] text-room-ink-3" dir="ltr">
+          {toArabicDigits(count)}
+        </span>
+      </a>
+    ))
+  }
+</nav>

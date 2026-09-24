@@ -1,0 +1,58 @@
+---
+import Base from '@/layouts/Base.astro';
+import SiteHeader from '@/components/world/SiteHeader.astro';
+import SiteFooter from '@/components/world/SiteFooter.astro';
+import CategoryNav from '@/components/world/CategoryNav.astro';
+import ProductGrid from '@/components/world/ProductGrid.astro';
+import { getCategories, getProducts } from '@/lib/api';
+import { toArabicDigits } from '@/lib/format';
+import { url } from '@/lib/url';
+
+export async function getStaticPaths() {
+  const categories = await getCategories();
+  const products = await getProducts();
+
+  return categories
+    .map((category) => ({
+      params: { slug: category.slug },
+      props: {
+        category,
+        products: products.filter((product) => product.category_id === category.id),
+      },
+    }))
+    .filter((entry) => entry.props.products.length > 0);
+}
+
+const { category, products } = Astro.props;
+---
+
+<Base
+  title={`${category.name} — وقار`}
+  description={`${toArabicDigits(products.length)} من ${category.name} في متجر وقار، كل واحدة مرّت بمعيار واحد.`}
+>
+  <SiteHeader />
+
+  <main id="main">
+    <header class="border-b border-hairline bg-exhibit-2">
+      <div class="mx-auto max-w-6xl space-y-5 px-5 py-10 lg:px-8 lg:py-12">
+        <div>
+          <nav class="font-data text-[0.75rem] tracking-[0.18em] text-accent-d" aria-label="المسار">
+            <a href={url('/catalog')} class="transition-colors hover:text-room-ink">المقتنيات</a>
+          </nav>
+          <h1 class="mt-2 font-display text-4xl leading-tight text-room-ink lg:text-5xl">
+            {category.name}
+          </h1>
+          <p class="mt-3 font-reading text-base text-room-ink-2 lg:text-lg">
+            {toArabicDigits(products.length)} قطعة في هذا القسم.
+          </p>
+        </div>
+
+        <CategoryNav current={category.slug} />
+      </div>
+    </header>
+
+    <ProductGrid products={products} />
+  </main>
+
+  <SiteFooter />
+</Base>

@@ -5,19 +5,28 @@
  * product page all read and write through here. Pointing this at Salla later
  * replaces the storage calls, not the shape.
  *
+ * A line is keyed by the product *and* the options chosen, so the same piece in
+ * two colours is two lines rather than a muddled quantity.
+ *
  * Every function touches localStorage inside a try/catch: private-mode Safari
  * throws on access, and a cart is never worth breaking the page for.
  */
 
-export interface CartLine {
+export interface CartLineInput {
   id: number;
   slug: string;
   name: string;
+  /** Chosen values, e.g. "أسود · وسط". */
+  options?: string;
   price: number;
   image: string;
-  quantity: number;
-  /** last known stock; null means the store does not track it */
+  /** Last known stock; null means the store does not track it. */
   max: number | null;
+}
+
+export interface CartLine extends CartLineInput {
+  key: string;
+  quantity: number;
 }
 
 export interface CartTotals {
@@ -33,7 +42,9 @@ export const FREE_SHIPPING_AT = 500;
 type Listener = (lines: CartLine[]) => void;
 const listeners = new Set<Listener>();
 
-const isLine = (value: unknown): value is CartLine => {
+export const lineKey = (id: number, options?: string): string => `${id}::${options ?? ''}`;
+
+const isLine = (value: unknown): value is CartLineInput & { quantity: number } => {
   if (typeof value !== 'object' || value === null) return false;
   const line = value as Partial<CartLine>;
   return (
@@ -58,7 +69,12 @@ export const readCart = (): CartLine[] => {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return [];
     const parsed: unknown = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed.filter(isLine) : [];
+    if (!Array.isArray(parsed)) return [];
+    return parsed.filter(isLine).map((line) => ({
+      ...line,
+      options: line.options ?? undefined,
+      key: line.key ?? lineKey(line.id, line.options),
+    }));
   } catch {
     return [];
   }
@@ -80,26 +96,28 @@ export const subscribe = (listener: Listener): (() => void) => {
   return () => listeners.delete(listener);
 };
 
-export const addLine = (line: Omit<CartLine, 'quantity'>, quantity = 1): CartLine[] => {
+export const addLine = (line: CartLineInput, quantity = 1): CartLine[] => {
   const lines = readCart();
-  const existing = lines.find((item) => item.id === line.id);
+  const key = lineKey(line.id, line.options);
+  const existing = lines.find((item) => item.key === key);
+
   if (existing) {
     existing.quantity = clampQuantity(existing.quantity + quantity, existing.max);
   } else {
-    lines.push({ ...line, quantity: clampQuantity(quantity, line.max) });
+    lines.push({ ...line, key, quantity: clampQuantity(quantity, line.max) });
   }
   return writeCart(lines);
 };
 
-export const setQuantity = (id: number, quantity: number): CartLine[] =>
+export const setQuantity = (key: string, quantity: number): CartLine[] =>
   writeCart(
     readCart().map((line) =>
-      line.id === id ? { ...line, quantity: clampQuantity(quantity, line.max) } : line
+      line.key === key ? { ...line, quantity: clampQuantity(quantity, line.max) } : line
     )
   );
 
-export const removeLine = (id: number): CartLine[] =>
-  writeCart(readCart().filter((line) => line.id !== id));
+export const removeLine = (key: string): CartLine[] =>
+  writeCart(readCart().filter((line) => line.key !== key));
 
 export const clearCart = (): CartLine[] => writeCart([]);
 

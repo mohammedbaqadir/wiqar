@@ -1,0 +1,47 @@
+---
+import { Picture } from 'astro:assets';
+import { photo } from '@/lib/images';
+
+interface Props {
+  /** Catalogue path, e.g. 'photos/mug.jpg'. */
+  path: string;
+  alt: string;
+  /** How wide the photo renders, so the browser can pick from the srcset. */
+  sizes: string;
+  widths?: number[];
+  /** Above-the-fold photos load eagerly and high priority. */
+  priority?: boolean;
+  class?: string;
+}
+
+const {
+  path,
+  alt,
+  sizes,
+  widths = [240, 360, 480],
+  priority = false,
+  class: className = '',
+  ...rest
+} = Astro.props;
+
+const source = photo(path);
+---
+
+{
+  source ? (
+    <Picture
+      src={source}
+      alt={alt}
+      widths={widths}
+      sizes={sizes}
+      formats={['avif', 'webp']}
+      quality={72}
+      loading={priority ? 'eager' : 'lazy'}
+      fetchpriority={priority ? 'high' : undefined}
+      class={className}
+      {...rest}
+    />
+  ) : (
+    <span class={`block bg-exhibit-2 ${className}`} aria-hidden="true" />
+  )
+}

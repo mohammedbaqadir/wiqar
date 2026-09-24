@@ -71,6 +71,17 @@
     color: var(--wq-ink);
   }
 
+  /* Photos fade in once they have arrived; without scripts they simply show.
+     Only images present at load get the loading class, so images the cart
+     builds later are never hidden by a transition that cannot run. */
+  img {
+    transition: opacity 300ms ease-out;
+  }
+
+  img.wq-loading {
+    opacity: 0;
+  }
+
   :focus-visible {
     outline: 2px solid var(--wq-accent-d);
     outline-offset: 2px;

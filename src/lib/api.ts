@@ -1,6 +1,5 @@
 import catalog from '@/data/catalog.json';
 import { toArabicDigits } from '@/lib/format';
-import { url } from '@/lib/url';
 
 /**
  * The store's data seam. Every page reads the shop through this file and
@@ -13,6 +12,12 @@ import { url } from '@/lib/url';
 export interface ApiImage {
   url: string;
   alt: string;
+}
+
+/** A choice the shopper makes: a size, a colour, a measure. */
+export interface ApiProductOption {
+  name: string;
+  values: Array<{ label: string; swatch?: string }>;
 }
 
 export interface ApiCategory {
@@ -39,6 +44,10 @@ export interface ApiProduct {
   standard: string;
   /** Shopper-facing synonyms: the forms people type that the copy doesn't carry. */
   keywords: string[];
+  /** ISO date, newest first when sorting by "الأحدث". */
+  created_at: string;
+  /** Empty when the piece has no choices to make. */
+  options: ApiProductOption[];
   image: ApiImage;
   images: ApiImage[];
 }
@@ -74,27 +83,41 @@ export const getCategory = async (id: number): Promise<ApiCategory | null> =>
 export const getProductsInCategory = async (categoryId: number): Promise<ApiProduct[]> =>
   data.products.filter((product) => product.category_id === categoryId);
 
-/** Same room first, then the rest — so the row is never empty. */
+/**
+ * Closest pieces first: the same room, then shared keywords, then a nearby price.
+ * Deterministic, so the row never reshuffles between builds.
+ */
 export const getRelated = async (product: ApiProduct, limit = 4): Promise<ApiProduct[]> => {
-  const inRoom = data.products.filter(
-    (other) => other.category_id === product.category_id && other.id !== product.id
-  );
-  const elsewhere = data.products.filter(
-    (other) => other.category_id !== product.category_id && other.id !== product.id
-  );
-  return [...inRoom, ...elsewhere].slice(0, limit);
+  const words = new Set(product.keywords ?? []);
+
+  const score = (other: ApiProduct): number => {
+    let points = other.category_id === product.category_id ? 3 : 0;
+    points += (other.keywords ?? []).filter((word) => words.has(word)).length;
+
+    const spread =
+      Math.max(other.price, product.price) / Math.max(1, Math.min(other.price, product.price));
+    return spread <= 1.6 ? points + 1 : points;
+  };
+
+  return data.products
+    .filter((other) => other.id !== product.id)
+    .map((other) => ({ product: other, points: score(other) }))
+    .sort((a, b) => b.points - a.points || a.product.price - b.product.price)
+    .slice(0, limit)
+    .map((entry) => entry.product);
 };
 
 export const isOnSale = (product: ApiProduct): boolean =>
   product.sale_price !== null && product.sale_price < product.regular_price;
 
+/** Gone: either the flag or an empty shelf. */
+export const isOutOfStock = (product: ApiProduct): boolean =>
+  product.is_out_of_stock || product.quantity === 0;
+
 /** The one red: last units, never for a product that is already gone. */
 export const isLowStock = (product: ApiProduct): boolean =>
-  !product.is_out_of_stock && product.quantity !== null && product.quantity <= 3;
+  !isOutOfStock(product) && product.quantity !== null && product.quantity <= 3;
 
 /** What the red flag says: a single piece is not "1 قطع". */
 export const lowStockLabel = (product: ApiProduct): string =>
   product.quantity === 1 ? 'آخر قطعة' : `آخر ${toArabicDigits(product.quantity ?? 0)} قطع`;
-
-/** Catalogue paths are relative; the site may be served from a sub-path. */
-export const imageSrc = (image: ApiImage): string => url(image.url);

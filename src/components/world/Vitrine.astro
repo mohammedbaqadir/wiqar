@@ -1,6 +1,7 @@
 ---
 import Button from '@/components/starwind/button/Button.astro';
-import { imageSrc, isLowStock, lowStockLabel, type ApiProduct } from '@/lib/api';
+import ProductPhoto from './ProductPhoto.astro';
+import { isLowStock, isOutOfStock, lowStockLabel, type ApiProduct } from '@/lib/api';
 import { money } from '@/lib/format';
 import { url } from '@/lib/url';
 
@@ -9,22 +10,23 @@ interface Props {
 }
 
 const { product } = Astro.props;
+const gone = isOutOfStock(product);
 ---
 
 <section class="relative border-b border-hairline">
   <div class="relative min-h-[48vh] overflow-hidden bg-exhibit-2 sm:min-h-[54vh] lg:min-h-[62vh]">
-    <img
-      src={imageSrc(product.image)}
+    <ProductPhoto
+      path={product.image.url}
       alt={product.image.alt}
+      sizes="100vw"
+      widths={[640, 960, 1400, 1800]}
+      priority
       class="absolute inset-0 size-full object-cover"
-      fetchpriority="high"
     />
     <div class="absolute inset-0 bg-gradient-to-t from-ink/75 via-ink/20 to-ink/5"></div>
 
     <div class="absolute inset-x-0 bottom-0">
-      <div
-        class="mx-auto flex max-w-6xl flex-col items-start gap-3 px-5 pb-10 lg:px-8 lg:pb-14"
-      >
+      <div class="mx-auto flex max-w-6xl flex-col items-start gap-3 px-5 pb-10 lg:px-8 lg:pb-14">
         <p class="flex items-center gap-3 font-data text-[0.7rem] text-exhibit/70">
           <span class="tracking-normal">المختارة</span>
           <span aria-hidden="true" class="h-px w-6 bg-exhibit/40"></span>
@@ -39,16 +41,16 @@ const { product } = Astro.props;
         <div class="mt-2 flex flex-wrap items-center gap-5">
           <span class="font-data text-lg text-exhibit">{money(product.price)}</span>
           {
-            isLowStock(product) && (
-              <span class="font-data text-[0.7rem] text-exhibit/70">{lowStockLabel(product)}</span>
+            gone ? (
+              <span class="font-data text-[0.7rem] text-exhibit/70">نفدت الكمية</span>
+            ) : (
+              isLowStock(product) && (
+                <span class="font-data text-[0.7rem] text-exhibit/70">{lowStockLabel(product)}</span>
+              )
             )
           }
-          <Button
-            as="a"
-            href={url(`/product/${product.slug}`)}
-            variant="outline"
-          >
-            تسوّق القطعة
+          <Button as="a" href={url(`/product/${product.slug}`)} variant="outline">
+            {gone ? 'تفاصيل القطعة' : 'تسوّق القطعة'}
           </Button>
         </div>
       </div>

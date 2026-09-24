@@ -8,15 +8,23 @@ import { url } from '@/lib/url';
 interface Props {
   title?: string;
   description?: string;
+  /** Share card image — a site path; it is made absolute below. */
+  image?: string;
+  type?: 'website' | 'product';
 }
 
 const {
   title = 'وقار — مقتنيات مختارة',
   description = 'متجر وقار: مقتنيات مختارة بمعيار واحد — الجودة والذوق والقيمة. توصيل داخل المملكة وإرجاع خلال ١٤ يومًا.',
+  image,
+  type = 'website',
 } = Astro.props;
 
 /* The theme is injected from the materials data: one source of truth. */
 const themeCss = `:root{${themeVars(materials)}}`;
+
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const shareImage = image ? new URL(image, Astro.site) : undefined;
 ---
 
 <!doctype html>
@@ -26,11 +34,59 @@ const themeCss = `:root{${themeVars(materials)}}`;
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
     <link rel="icon" href={url('/favicon.svg')} type="image/svg+xml" />
+
+    <meta property="og:type" content={type} />
+    <meta property="og:site_name" content="وقار" />
+    <meta property="og:locale" content="ar_SA" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    {shareImage && <meta property="og:image" content={shareImage} />}
+    <meta name="twitter:card" content={shareImage ? 'summary_large_image' : 'summary'} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    {shareImage && <meta name="twitter:image" content={shareImage} />}
+
     <style is:inline set:html={themeCss} />
+    <script is:inline>
+      /* Scripts are on: hide images until they have arrived, then fade them in. */
+      document.documentElement.classList.add('js');
+    </script>
   </head>
+
   <body class="group/page min-h-dvh bg-room font-sans text-room-ink antialiased">
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:absolute focus:start-4 focus:top-4 focus:z-50 focus:border focus:border-hairline focus:bg-exhibit focus:px-4 focus:py-2 focus:text-sm focus:text-ink"
+    >
+      تخطَّ إلى المحتوى
+    </a>
+
     <slot />
     <CartDrawer />
+
+    <script is:inline>
+      (function () {
+        var reveal = function (image) {
+          image.classList.remove('wq-loading');
+        };
+
+        document.addEventListener(
+          'load',
+          function (event) {
+            if (event.target instanceof HTMLImageElement) reveal(event.target);
+          },
+          true
+        );
+
+        /* Only the images already in the markup are held back while they load. */
+        document.querySelectorAll('img').forEach(function (image) {
+          if (image.complete) reveal(image);
+          else image.classList.add('wq-loading');
+        });
+      })();
+    </script>
   </body>
 </html>

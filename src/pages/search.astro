@@ -12,7 +12,7 @@ const products = await getProducts();
 <Base title="البحث — وقار" description="ابحث في مقتنيات وقار بالاسم أو الرقم أو الوصف.">
   <SiteHeader />
 
-  <main>
+  <main id="main">
     <header class="border-b border-hairline bg-exhibit-2">
       <div class="mx-auto max-w-6xl px-5 py-10 lg:px-8 lg:py-12">
         <p class="font-data text-[0.75rem] tracking-[0.18em] text-accent-d">البحث</p>
@@ -27,7 +27,7 @@ const products = await getProducts();
           action={url('/search')}
           method="get"
           role="search"
-          class="mt-6 flex max-w-md items-center gap-3 border border-hairline bg-exhibit px-3.5 focus-within:border-outline focus-within:ring-2 focus-within:ring-outline/40"
+          class="relative mt-6 flex max-w-md items-center gap-3 border border-hairline bg-exhibit px-3.5 focus-within:border-outline focus-within:ring-2 focus-within:ring-outline/40"
         >
           <svg
             viewBox="0 0 24 24"
@@ -48,6 +48,10 @@ const products = await getProducts();
             autocomplete="off"
             placeholder="اكتب اسم قطعة أو رقمها"
             aria-label="ابحث في المتجر"
+            role="combobox"
+            aria-expanded="false"
+            aria-autocomplete="list"
+            aria-controls="search-suggestions"
             class="min-h-11 w-full bg-transparent text-sm text-ink placeholder:text-room-ink-3"
           />
           <button
@@ -56,6 +60,16 @@ const products = await getProducts();
           >
             ابحث
           </button>
+
+          <ul
+            id="search-suggestions"
+            data-suggestions
+            role="listbox"
+            aria-label="اقتراحات"
+            hidden
+            class="absolute inset-x-0 top-full z-30 mt-1 max-h-80 overflow-y-auto border border-hairline bg-exhibit shadow-lg"
+          >
+          </ul>
         </form>
 
         <p data-search-count class="mt-4 font-data text-[0.8rem] text-room-ink-2"></p>
@@ -96,7 +110,7 @@ const products = await getProducts();
 </Base>
 
 <script>
-  import { toArabicDigits } from '@/lib/format';
+  import { money, toArabicDigits } from '@/lib/format';
   import { scoreMatch } from '@/lib/search';
 
   const results = document.querySelector<HTMLElement>('[data-client-filter]');
@@ -106,8 +120,71 @@ const products = await getProducts();
   const countEl = document.querySelector<HTMLElement>('[data-search-count]');
   const emptyEl = document.querySelector<HTMLElement>('[data-search-empty]');
   const emptyQueryEl = document.querySelector<HTMLElement>('[data-search-empty-query]');
+  const suggestions = document.querySelector<HTMLElement>('[data-suggestions]');
 
   if (results && cards.length > 0) {
+    let activeIndex = -1;
+
+    const closeSuggestions = () => {
+      if (!suggestions || !input) return;
+      suggestions.hidden = true;
+      suggestions.replaceChildren();
+      input.setAttribute('aria-expanded', 'false');
+      input.removeAttribute('aria-activedescendant');
+      activeIndex = -1;
+    };
+
+    /** The six closest matches, offered while the shopper is still typing. */
+    const suggest = (query: string) => {
+      if (!suggestions || !input || input.value.trim().length < 2) {
+        closeSuggestions();
+        return;
+      }
+
+      const matches = cards
+        .map((card) => ({
+          card,
+          ...scoreMatch(card.dataset.search ?? '', card.dataset.name ?? '', query),
+        }))
+        .filter((entry) => entry.matched)
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 6);
+
+      if (matches.length === 0) {
+        closeSuggestions();
+        return;
+      }
+
+      suggestions.replaceChildren(
+        ...matches.map((entry, index) => {
+          const item = document.createElement('li');
+          item.id = `suggestion-${index}`;
+          item.setAttribute('role', 'option');
+          item.setAttribute('aria-selected', 'false');
+
+          const link = document.createElement('a');
+          link.href = entry.card.querySelector('a')?.getAttribute('href') ?? '#';
+          link.className =
+            'flex items-center justify-between gap-3 px-4 py-3 text-sm text-ink transition-colors hover:bg-exhibit-2';
+
+          const name = document.createElement('span');
+          name.textContent = entry.card.querySelector('h3')?.textContent?.trim() ?? '';
+
+          const price = document.createElement('span');
+          price.className = 'font-data text-xs text-ink-3';
+          price.textContent = money(Number(entry.card.dataset.price ?? 0));
+
+          link.append(name, price);
+          item.append(link);
+          return item;
+        })
+      );
+
+      suggestions.hidden = false;
+      input.setAttribute('aria-expanded', 'true');
+      activeIndex = -1;
+    };
+
     const apply = (raw: string) => {
       const query = raw.trim();
       document.documentElement.removeAttribute('data-filtering');
@@ -145,7 +222,40 @@ const products = await getProducts();
       history.replaceState(null, '', next);
     };
 
-    input?.addEventListener('input', () => apply(input.value));
+    input?.addEventListener('input', () => {
+      apply(input.value);
+      suggest(input.value);
+    });
+
+    input?.addEventListener('keydown', (event) => {
+      const options = Array.from(suggestions?.querySelectorAll<HTMLElement>('li') ?? []);
+      if (options.length === 0) return;
+
+      if (event.key === 'ArrowDown') activeIndex = (activeIndex + 1) % options.length;
+      else if (event.key === 'ArrowUp') activeIndex = (activeIndex - 1 + options.length) % options.length;
+      else if (event.key === 'Escape') {
+        closeSuggestions();
+        return;
+      } else if (event.key === 'Enter' && activeIndex >= 0) {
+        event.preventDefault();
+        options[activeIndex].querySelector('a')?.click();
+        return;
+      } else return;
+
+      event.preventDefault();
+      options.forEach((option, index) =>
+        option.setAttribute('aria-selected', String(index === activeIndex))
+      );
+      const active = options[activeIndex];
+      if (active && input) {
+        input.setAttribute('aria-activedescendant', active.id);
+        active.scrollIntoView({ block: 'nearest' });
+      }
+    });
+
+    /* Keep focus in the field while a suggestion is clicked, then close on blur. */
+    suggestions?.addEventListener('mousedown', (event) => event.preventDefault());
+    input?.addEventListener('blur', closeSuggestions);
 
     apply(new URLSearchParams(location.search).get('q') ?? '');
   }

@@ -6,10 +6,12 @@ import DrawerRail from '@/components/world/DrawerRail.astro';
 import ProductGrid from '@/components/world/ProductGrid.astro';
 import SiteFooter from '@/components/world/SiteFooter.astro';
 import { getProducts } from '@/lib/api';
+import { shareImage } from '@/lib/images';
 
 const products = await getProducts();
 const lead = products[0];
 const featured = products.slice(1, 9);
+const share = await shareImage(lead.image.url);
 
 const promises = [
   { term: 'الجودة', note: 'مواد تدوم، وتشطيب لا يتقشّر بعد شهر.' },
@@ -18,9 +20,9 @@ const promises = [
 ];
 ---
 
-<Base>
+<Base image={share}>
   <SiteHeader />
-  <main>
+  <main id="main">
     <Vitrine product={lead} />
     <DrawerRail />
     <ProductGrid products={featured} title="مقتنيات مختارة" />

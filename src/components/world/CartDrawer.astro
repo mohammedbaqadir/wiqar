@@ -103,10 +103,13 @@ import { url } from '@/lib/url';
     <img class="size-20 shrink-0 bg-exhibit-2 object-cover" alt="" />
     <div class="flex min-w-0 flex-1 flex-col justify-between gap-2">
       <div class="flex items-start justify-between gap-3">
-        <a
-          data-line-name
-          class="truncate text-sm text-ink transition-colors hover:text-accent-d"
-        ></a>
+        <div class="min-w-0">
+          <a
+            data-line-name
+            class="block truncate text-sm text-ink transition-colors hover:text-accent-d"
+          ></a>
+          <p data-line-options class="mt-0.5 font-data text-[0.65rem] text-ink-3" hidden></p>
+        </div>
         <button
           type="button"
           data-line-remove
@@ -181,7 +184,7 @@ import { url } from '@/lib/url';
     progressEl
   ) {
     /** A re-render replaces every row, so remember where the focus was. */
-    let pendingFocus: { id: number; action: 'inc' | 'dec' | 'remove' } | null = null;
+    let pendingFocus: { key: string; action: 'inc' | 'dec' | 'remove' } | null = null;
     let lastFocused: HTMLElement | null = null;
 
     const setShown = (element: HTMLElement, shown: boolean) => {
@@ -193,7 +196,7 @@ import { url } from '@/lib/url';
       const node = (template.content.firstElementChild as HTMLElement).cloneNode(
         true
       ) as HTMLElement;
-      node.setAttribute('data-line-id', String(line.id));
+      node.setAttribute('data-line-id', line.key);
 
       const image = node.querySelector('img') as HTMLImageElement;
       image.src = line.image;
@@ -202,6 +205,12 @@ import { url } from '@/lib/url';
       const name = node.querySelector('[data-line-name]') as HTMLAnchorElement;
       name.textContent = line.name;
       name.href = url(`/product/${line.slug}`);
+
+      const options = node.querySelector('[data-line-options]') as HTMLElement;
+      if (line.options) {
+        options.textContent = line.options;
+        options.hidden = false;
+      }
 
       const quantity = node.querySelector('[data-line-qty]') as HTMLElement;
       quantity.textContent = toArabicDigits(line.quantity);
@@ -212,20 +221,20 @@ import { url } from '@/lib/url';
       const increase = node.querySelector('[data-line-inc]') as HTMLButtonElement;
       increase.disabled = line.max !== null && line.quantity >= line.max;
       increase.addEventListener('click', () => {
-        pendingFocus = { id: line.id, action: 'inc' };
-        setQuantity(line.id, line.quantity + 1);
+        pendingFocus = { key: line.key, action: 'inc' };
+        setQuantity(line.key, line.quantity + 1);
       });
 
       const decrease = node.querySelector('[data-line-dec]') as HTMLButtonElement;
       decrease.addEventListener('click', () => {
-        pendingFocus = { id: line.id, action: 'dec' };
-        setQuantity(line.id, line.quantity - 1);
+        pendingFocus = { key: line.key, action: 'dec' };
+        setQuantity(line.key, line.quantity - 1);
       });
 
       const remove = node.querySelector('[data-line-remove]') as HTMLButtonElement;
       remove.addEventListener('click', () => {
-        pendingFocus = { id: line.id, action: 'remove' };
-        removeLine(line.id);
+        pendingFocus = { key: line.key, action: 'remove' };
+        removeLine(line.key);
       });
 
       return node;
@@ -236,7 +245,7 @@ import { url } from '@/lib/url';
 
       /** Re-rendered rows lose the focus ring: put it back on the same control. */
       if (pendingFocus) {
-        const row = list.querySelector<HTMLElement>(`[data-line-id="${pendingFocus.id}"]`);
+        const row = list.querySelector<HTMLElement>(`[data-line-id="${pendingFocus.key}"]`);
         const selector =
           pendingFocus.action === 'remove'
             ? '[data-line-remove]'
@@ -330,9 +339,11 @@ import { url } from '@/lib/url';
     document.querySelectorAll<HTMLElement>('[data-add-to-cart]').forEach((button) => {
       button.addEventListener('click', () => {
         const data = button.dataset;
-        const quantityInput = button
-          .closest('[data-buy]')
-          ?.querySelector<HTMLInputElement>('input[name="quantity"]');
+        const buy = button.closest('[data-buy]');
+        const quantityInput = buy?.querySelector<HTMLInputElement>('input[name="quantity"]');
+        const chosen = Array.from(buy?.querySelectorAll<HTMLInputElement>('[data-option]:checked') ?? [])
+          .map((input) => input.value)
+          .filter(Boolean);
         const name = data.productName ?? '';
 
         addLine(
@@ -340,6 +351,7 @@ import { url } from '@/lib/url';
             id: Number(data.productId),
             slug: data.productSlug ?? '',
             name,
+            options: chosen.length > 0 ? chosen.join(' · ') : undefined,
             price: Number(data.productPrice ?? 0),
             image: data.productImage ?? '',
             max: data.productStock ? Number(data.productStock) : null,

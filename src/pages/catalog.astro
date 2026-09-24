@@ -1,125 +1,97 @@
 ---
 import Base from '@/layouts/Base.astro';
 import SiteHeader from '@/components/world/SiteHeader.astro';
-import ProductGrid from '@/components/world/ProductGrid.astro';
 import SiteFooter from '@/components/world/SiteFooter.astro';
-import { getCategories, getProducts } from '@/lib/api';
+import CategoryNav from '@/components/world/CategoryNav.astro';
+import ProductGrid from '@/components/world/ProductGrid.astro';
+import { getProducts } from '@/lib/api';
 import { toArabicDigits } from '@/lib/format';
 
 const products = await getProducts();
-const categories = await getCategories();
 
-const rooms = categories
-  .map((category) => ({
-    category,
-    count: products.filter((product) => product.category_id === category.id).length,
-  }))
-  .filter((room) => room.count > 0);
+const sorts = [
+  { id: 'newest', label: 'الأحدث' },
+  { id: 'price-asc', label: 'السعر: الأقل أولًا' },
+  { id: 'price-desc', label: 'السعر: الأعلى أولًا' },
+];
 ---
 
-<Base title="المتجر — وقار">
+<Base title="المقتنيات — وقار">
   <SiteHeader />
 
-  <main>
+  <main id="main">
     <header class="border-b border-hairline bg-exhibit-2">
-      <div class="mx-auto max-w-6xl px-5 py-10 lg:px-8 lg:py-14">
-        <p class="font-data text-[0.75rem] tracking-[0.18em] text-accent-d">المتجر</p>
-        <h1 class="mt-2 font-display text-4xl leading-tight text-room-ink lg:text-5xl">
-          كل المقتنيات
-        </h1>
-        <p class="mt-3 max-w-prose font-reading text-base leading-loose text-room-ink-2 lg:text-lg">
-          {toArabicDigits(products.length)} قطعة معروضة الآن، وكل واحدة مرّت بالمعيار نفسه: الجودة والذوق والقيمة.
-        </p>
+      <div class="mx-auto max-w-6xl space-y-5 px-5 py-10 lg:px-8 lg:py-12">
+        <div>
+          <p class="font-data text-[0.75rem] tracking-[0.18em] text-accent-d">المتجر</p>
+          <h1 class="mt-2 font-display text-4xl leading-tight text-room-ink lg:text-5xl">
+            كل المقتنيات
+          </h1>
+          <p class="mt-3 max-w-prose font-reading text-base leading-loose text-room-ink-2 lg:text-lg">
+            {toArabicDigits(products.length)} قطعة معروضة الآن، وكل واحدة مرّت بالمعيار نفسه: الجودة والذوق والقيمة.
+          </p>
+        </div>
 
-        <div class="mt-6 flex flex-wrap gap-2">
-          <button
-            type="button"
-            data-category-chip
-            data-category=""
-            aria-pressed="true"
-            class="inline-flex min-h-11 items-center gap-2 border border-hairline px-3.5 text-sm text-room-ink transition-colors hover:border-outline aria-pressed:border-outline aria-pressed:bg-exhibit"
-          >
-            الكل
-            <span class="font-data text-[0.65rem] text-room-ink-3" dir="ltr">
-              {toArabicDigits(products.length)}
-            </span>
-          </button>
+        <CategoryNav />
 
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="font-data text-[0.7rem] tracking-[0.12em] text-room-ink-3">الترتيب</span>
           {
-            rooms.map(({ category, count }) => (
+            sorts.map((sort) => (
               <button
                 type="button"
-                data-category-chip
-                data-category={category.slug}
+                data-sort={sort.id}
                 aria-pressed="false"
-                class="inline-flex min-h-11 items-center gap-2 border border-hairline px-3.5 text-sm text-room-ink-2 transition-colors hover:border-outline hover:text-room-ink aria-pressed:border-outline aria-pressed:bg-exhibit aria-pressed:text-room-ink"
+                class="inline-flex min-h-11 items-center border border-hairline px-3.5 text-sm text-room-ink-2 transition-colors hover:border-outline hover:text-room-ink aria-pressed:border-outline aria-pressed:bg-exhibit aria-pressed:text-room-ink"
               >
-                {category.name}
-                <span class="font-data text-[0.65rem] text-room-ink-3" dir="ltr">
-                  {toArabicDigits(count)}
-                </span>
+                {sort.label}
               </button>
             ))
           }
         </div>
-
-        <p data-catalog-count class="mt-4 font-data text-[0.8rem] text-room-ink-2"></p>
       </div>
     </header>
 
-    <script is:inline>
-      (function () {
-        if (!new URLSearchParams(location.search).get('category')) return;
-        document.documentElement.setAttribute('data-filtering', '');
-      })();
-    </script>
-
-    <div data-client-filter>
-      <ProductGrid products={products} indexed />
-    </div>
+    <ProductGrid products={products} />
   </main>
 
   <SiteFooter />
 </Base>
 
 <script>
-  import { toArabicDigits } from '@/lib/format';
-
   const cards = Array.from(document.querySelectorAll<HTMLElement>('[data-product-card]'));
-  const chips = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-category-chip]'));
-  const countEl = document.querySelector<HTMLElement>('[data-catalog-count]');
+  const buttons = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-sort]'));
 
-  if (cards.length > 0) {
-    const apply = (slug: string) => {
-      document.documentElement.removeAttribute('data-filtering');
+  if (cards.length > 0 && buttons.length > 0) {
+    const priceOf = (card: HTMLElement) => Number(card.dataset.price ?? 0);
+    const dateOf = (card: HTMLElement) => card.dataset.created ?? '';
 
-      let shown = 0;
-      cards.forEach((card) => {
-        const matched = slug === '' || card.dataset.category === slug;
-        card.style.display = matched ? '' : 'none';
-        if (matched) shown += 1;
+    const apply = (sort: string) => {
+      const sorted = [...cards].sort((a, b) => {
+        if (sort === 'price-asc') return priceOf(a) - priceOf(b);
+        if (sort === 'price-desc') return priceOf(b) - priceOf(a);
+        return dateOf(b).localeCompare(dateOf(a));
       });
 
-      chips.forEach((chip) =>
-        chip.setAttribute('aria-pressed', String((chip.dataset.category ?? '') === slug))
+      /* The grid reorders on `order`, so nothing is rebuilt. */
+      sorted.forEach((card, index) => {
+        card.style.order = String(index);
+      });
+
+      buttons.forEach((button) =>
+        button.setAttribute('aria-pressed', String(button.dataset.sort === sort))
       );
 
-      if (countEl) {
-        countEl.textContent = slug
-          ? `${toArabicDigits(shown)} من ${toArabicDigits(cards.length)} قطعة`
-          : '';
-      }
-
       const next = new URL(location.href);
-      if (slug) next.searchParams.set('category', slug);
-      else next.searchParams.delete('category');
+      if (sort === 'newest') next.searchParams.delete('sort');
+      else next.searchParams.set('sort', sort);
       history.replaceState(null, '', next);
     };
 
-    chips.forEach((chip) =>
-      chip.addEventListener('click', () => apply(chip.dataset.category ?? ''))
+    buttons.forEach((button) =>
+      button.addEventListener('click', () => apply(button.dataset.sort ?? 'newest'))
     );
 
-    apply(new URLSearchParams(location.search).get('category') ?? '');
+    apply(new URLSearchParams(location.search).get('sort') ?? 'newest');
   }
 </script>

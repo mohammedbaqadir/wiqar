@@ -19,7 +19,7 @@ const rooms = categories
     {
       rooms.map(({ category, count }) => (
         <a
-          href={url(`/catalog?category=${category.slug}`)}
+          href={url(`/category/${category.slug}`)}
           class="flex min-h-11 min-w-32 flex-1 items-center gap-2 border-hairline px-3.5 text-sm whitespace-nowrap text-room-ink transition-colors hover:bg-room-2 [&+&]:border-s"
         >
           <span class="h-0.5 w-5 bg-accent" aria-hidden="true" />
