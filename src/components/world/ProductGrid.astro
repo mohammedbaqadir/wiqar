@@ -103,6 +103,26 @@ for (const product of products) {
                 </span>
               )}
 
+              {/* Touch has no hover: a standing chevron says the card opens. */}
+              <span
+                data-touch-cue
+                aria-hidden="true"
+                class="absolute end-3 bottom-3 z-10 size-8 place-items-center bg-exhibit/90 text-ink-2"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="size-4"
+                  aria-hidden="true"
+                >
+                  <path d="M14 6l-6 6 6 6"></path>
+                </svg>
+              </span>
+
               {/* Pointer users get quick add — but never past a choice they have to
                   make. With options, the product page is the honest path. */}
               {!gone && !needsChoosing && (

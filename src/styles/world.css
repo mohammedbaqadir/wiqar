@@ -129,7 +129,6 @@
   input,
   textarea,
   select {
-    caret-color: var(--wq-accent-d);
   }
 
   ::-webkit-scrollbar {
@@ -175,6 +174,17 @@ html[data-filtering] [data-client-filter] {
 
 [data-quick-add] {
   display: none;
+}
+
+/* Touch has no hover: a standing chevron says the card opens. */
+[data-touch-cue] {
+  display: none;
+}
+
+@media (pointer: coarse) {
+  [data-touch-cue] {
+    display: grid;
+  }
 }
 
 @media (pointer: fine) {
