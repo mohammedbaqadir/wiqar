@@ -85,6 +85,13 @@ import { url } from '@/lib/url';
         الشحن يُحسب عند الدفع · إرجاع خلال ١٤ يومًا
       </p>
 
+      <a
+        href={url('/checkout')}
+        class="inline-flex min-h-11 items-center justify-center bg-ink px-4 text-sm text-exhibit transition-colors hover:bg-ink/90"
+      >
+        إتمام الشراء
+      </a>
+
       <button
         type="button"
         data-cart-close-continue
@@ -147,6 +154,7 @@ import { url } from '@/lib/url';
 <script>
   import {
     addLine,
+    optionLabel,
     readCart,
     removeLine,
     setQuantity,
@@ -207,8 +215,9 @@ import { url } from '@/lib/url';
       name.href = url(`/product/${line.slug}`);
 
       const options = node.querySelector('[data-line-options]') as HTMLElement;
-      if (line.options) {
-        options.textContent = line.options;
+      const chosen = optionLabel(line.options);
+      if (chosen) {
+        options.textContent = chosen;
         options.hidden = false;
       }
 
@@ -342,8 +351,8 @@ import { url } from '@/lib/url';
         const buy = button.closest('[data-buy]');
         const quantityInput = buy?.querySelector<HTMLInputElement>('input[name="quantity"]');
         const chosen = Array.from(buy?.querySelectorAll<HTMLInputElement>('[data-option]:checked') ?? [])
-          .map((input) => input.value)
-          .filter(Boolean);
+          .map((input) => ({ name: input.dataset.optionName ?? '', value: input.value }))
+          .filter((option) => option.name !== '' && option.value !== '');
         const name = data.productName ?? '';
 
         addLine(
@@ -351,7 +360,7 @@ import { url } from '@/lib/url';
             id: Number(data.productId),
             slug: data.productSlug ?? '',
             name,
-            options: chosen.length > 0 ? chosen.join(' · ') : undefined,
+            options: chosen.length > 0 ? chosen : undefined,
             price: Number(data.productPrice ?? 0),
             image: data.productImage ?? '',
             max: data.productStock ? Number(data.productStock) : null,

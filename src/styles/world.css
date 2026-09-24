@@ -71,6 +71,43 @@
     color: var(--wq-ink);
   }
 
+  /* ── form controls ──────────────────────────────────────────
+     One mapping for every field. The forms plugin brings its own
+     neutral borders; the world's hairline, radius and focus ring win
+     here instead of being patched input by input. */
+
+  input[type],
+  textarea,
+  select {
+    border-color: var(--wq-hairline);
+    border-radius: var(--radius);
+    background-color: var(--wq-exhibit);
+    color: var(--wq-ink);
+    caret-color: var(--wq-accent-d);
+  }
+
+  input[type]:focus,
+  textarea:focus,
+  select:focus {
+    border-color: var(--wq-accent-d);
+    outline: 2px solid var(--wq-accent-d);
+    outline-offset: 1px;
+  }
+
+  /* Fields inside a bordered wrapper draw no line or ring of their own:
+     the wrapper carries the focus state. */
+  input[type].wq-field-bare,
+  textarea.wq-field-bare {
+    border: 0;
+    border-radius: 0;
+    background-color: transparent;
+  }
+
+  input[type].wq-field-bare:focus,
+  textarea.wq-field-bare:focus {
+    outline: none;
+  }
+
   /* Photos fade in once they have arrived; without scripts they simply show.
      Only images present at load get the loading class, so images the cart
      builds later are never hidden by a transition that cannot run. */

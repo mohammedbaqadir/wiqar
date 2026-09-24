@@ -1,0 +1,311 @@
+---
+import Base from '@/layouts/Base.astro';
+import SiteHeader from '@/components/world/SiteHeader.astro';
+import SiteFooter from '@/components/world/SiteFooter.astro';
+import { url } from '@/lib/url';
+
+const fields = [
+  { name: 'name', label: 'الاسم الكامل', type: 'text', autocomplete: 'name', hint: '' },
+  { name: 'phone', label: 'رقم الجوال', type: 'tel', autocomplete: 'tel', hint: 'مثال: ٠٥٠١٢٣٤٥٦٧' },
+  { name: 'city', label: 'المدينة', type: 'text', autocomplete: 'address-level2', hint: '' },
+  { name: 'address', label: 'العنوان', type: 'text', autocomplete: 'street-address', hint: 'الحي، الشارع، رقم المبنى' },
+];
+---
+
+<Base title="إتمام الشراء — وقار" description="راجع سلتك وأدخل بيانات التوصيل.">
+  <SiteHeader />
+
+  <main id="main" class="mx-auto max-w-6xl px-5 py-10 lg:px-8 lg:py-14">
+    <header class="border-b border-hairline pb-6">
+      <p class="font-data text-[0.75rem] tracking-[0.18em] text-accent-d">الطلب</p>
+      <h1 class="mt-2 font-display text-4xl leading-tight text-room-ink lg:text-5xl">
+        إتمام الشراء
+      </h1>
+      <p class="mt-3 max-w-prose font-reading text-base leading-loose text-room-ink-2 lg:text-lg">
+        راجع القطع، ثم أدخل بيانات التوصيل. لا يُخصم أي مبلغ قبل تأكيد الطلب.
+      </p>
+    </header>
+
+    <noscript>
+      <p class="mt-6 border border-hairline bg-exhibit px-4 py-3 text-sm text-room-ink-2">
+        سلتك محفوظة في هذا المتصفح، وتحتاج إلى تشغيل جافاسكربت لعرضها هنا.
+      </p>
+    </noscript>
+
+    <div data-checkout-empty style="display:none" class="py-16 text-center">
+      <p class="font-display text-2xl text-room-ink">سلتك فارغة</p>
+      <p class="mx-auto mt-3 max-w-md font-reading text-base leading-loose text-room-ink-2">
+        لم تُضف أي قطعة بعد، فابدأ من المتجر.
+      </p>
+      <a
+        href={url('/catalog')}
+        class="mt-6 inline-flex min-h-11 items-center border border-hairline px-5 text-sm text-room-ink transition-colors hover:bg-exhibit"
+      >
+        تصفّح المقتنيات
+      </a>
+    </div>
+
+    <div data-checkout-body style="display:none" class="mt-8 gap-10 lg:grid lg:grid-cols-[1.5fr_1fr] lg:items-start">
+      <section class="space-y-10">
+        <div class="space-y-4">
+          <h2 class="font-display text-2xl text-room-ink">القطع</h2>
+          <ul data-checkout-lines class="border-t border-hairline"></ul>
+        </div>
+
+        <form data-checkout-form class="space-y-6" novalidate>
+          <h2 class="font-display text-2xl text-room-ink">بيانات التوصيل</h2>
+
+          <div class="grid gap-5 sm:grid-cols-2">
+            {
+              fields.map((field) => (
+                <div class:list={['space-y-2', field.name === 'address' && 'sm:col-span-2']}>
+                  <label for={`checkout-${field.name}`} class="block text-sm text-room-ink-2">
+                    {field.label}
+                  </label>
+                  <input
+                    id={`checkout-${field.name}`}
+                    name={field.name}
+                    type={field.type}
+                    autocomplete={field.autocomplete}
+                    class="w-full px-3 py-2.5 text-sm"
+                  />
+                  <p data-error-for={field.name} class="hidden text-[0.75rem] text-signal"></p>
+                  {field.hint && <p class="text-[0.75rem] text-room-ink-3">{field.hint}</p>}
+                </div>
+              ))
+            }
+
+            <div class="space-y-2 sm:col-span-2">
+              <label for="checkout-notes" class="block text-sm text-room-ink-2">
+                ملاحظات على الطلب <span class="text-room-ink-3">(اختياري)</span>
+              </label>
+              <textarea
+                id="checkout-notes"
+                name="notes"
+                rows="3"
+                class="w-full px-3 py-2.5 text-sm"></textarea>
+            </div>
+          </div>
+
+          <div class="space-y-3 border-t border-hairline pt-6">
+            <button
+              type="submit"
+              data-checkout-submit
+              class="inline-flex min-h-11 w-full items-center justify-center bg-ink px-6 text-sm text-exhibit transition-colors hover:bg-ink/90 disabled:opacity-50 sm:w-auto"
+            >
+              المتابعة إلى الدفع
+            </button>
+            <p data-checkout-status role="status" class="text-sm text-room-ink-2"></p>
+          </div>
+        </form>
+      </section>
+
+      <aside class="space-y-5 border border-hairline bg-exhibit p-5 lg:sticky lg:top-6">
+        <h2 class="font-display text-xl text-ink">الملخص</h2>
+
+        <dl class="space-y-3 text-sm">
+          <div class="flex items-baseline justify-between gap-3">
+            <dt class="text-ink-2">المجموع الفرعي</dt>
+            <dd data-summary-subtotal class="font-data text-ink"></dd>
+          </div>
+          <div class="flex items-baseline justify-between gap-3">
+            <dt class="text-ink-2">الشحن</dt>
+            <dd data-summary-shipping class="font-data text-ink"></dd>
+          </div>
+          <div class="flex items-baseline justify-between gap-3 border-t border-hairline-ink pt-3">
+            <dt class="text-ink">الإجمالي</dt>
+            <dd data-summary-total class="font-data text-lg text-ink"></dd>
+          </div>
+        </dl>
+
+        <div class="space-y-2">
+          <p data-summary-note class="text-[0.8rem] leading-relaxed text-ink-2"></p>
+          <div class="h-[3px] w-full bg-exhibit-2">
+            <span
+              data-summary-progress
+              class="block h-full bg-accent transition-[width] duration-300"
+              style="width:0%"></span>
+          </div>
+        </div>
+
+        <p class="text-[0.75rem] leading-relaxed text-ink-3">
+          الأسعار تشمل ضريبة القيمة المضافة · إرجاع خلال ١٤ يومًا
+        </p>
+      </aside>
+    </div>
+  </main>
+
+  <SiteFooter />
+</Base>
+
+<template data-checkout-line-template>
+  <li class="flex gap-4 border-b border-hairline py-5">
+    <img class="size-20 shrink-0 bg-exhibit-2 object-cover" alt="" />
+    <div class="flex min-w-0 flex-1 flex-col justify-between gap-3">
+      <div class="flex items-start justify-between gap-3">
+        <div class="min-w-0">
+          <a data-line-name class="block truncate text-sm text-room-ink transition-colors hover:text-accent-d"></a>
+          <p data-line-options class="mt-1 font-data text-[0.7rem] text-room-ink-3" hidden></p>
+        </div>
+        <button
+          type="button"
+          data-line-remove
+          class="-me-1 inline-flex min-h-11 shrink-0 items-center px-1.5 font-data text-[0.7rem] text-room-ink-3 transition-colors hover:text-signal"
+        >
+          إزالة
+        </button>
+      </div>
+      <div class="flex items-center justify-between gap-3">
+        <div class="flex items-center border border-hairline">
+          <button type="button" data-line-inc aria-label="زيادة الكمية" class="size-11 text-room-ink transition-colors hover:bg-exhibit-2 disabled:opacity-35">+</button>
+          <span data-line-qty class="min-w-8 text-center font-data text-sm text-room-ink"></span>
+          <button type="button" data-line-dec aria-label="إنقاص الكمية" class="size-11 text-room-ink transition-colors hover:bg-exhibit-2">−</button>
+        </div>
+        <span data-line-price class="font-data text-sm text-room-ink"></span>
+      </div>
+    </div>
+  </li>
+</template>
+
+<script>
+  import { FREE_SHIPPING_AT, optionLabel, readCart, removeLine, setQuantity, subscribe, totals, type CartLine } from '@/lib/cart';
+  import { beginCheckout, buildOrder, shippingFor } from '@/lib/checkout';
+  import { money, toArabicDigits } from '@/lib/format';
+  import { url } from '@/lib/url';
+
+  const body = document.querySelector<HTMLElement>('[data-checkout-body]');
+  const empty = document.querySelector<HTMLElement>('[data-checkout-empty]');
+  const list = document.querySelector<HTMLElement>('[data-checkout-lines]');
+  const template = document.querySelector<HTMLTemplateElement>('[data-checkout-line-template]');
+  const form = document.querySelector<HTMLFormElement>('[data-checkout-form]');
+  const submit = document.querySelector<HTMLButtonElement>('[data-checkout-submit]');
+  const status = document.querySelector<HTMLElement>('[data-checkout-status]');
+  const subtotalEl = document.querySelector<HTMLElement>('[data-summary-subtotal]');
+  const shippingEl = document.querySelector<HTMLElement>('[data-summary-shipping]');
+  const totalEl = document.querySelector<HTMLElement>('[data-summary-total]');
+  const noteEl = document.querySelector<HTMLElement>('[data-summary-note]');
+  const progressEl = document.querySelector<HTMLElement>('[data-summary-progress]');
+
+  if (body && empty && list && template && form && submit && status) {
+    const show = (element: HTMLElement, visible: boolean) => {
+      element.style.display = visible ? '' : 'none';
+    };
+
+    const buildLine = (line: CartLine): HTMLElement => {
+      const node = (template.content.firstElementChild as HTMLElement).cloneNode(true) as HTMLElement;
+      node.setAttribute('data-line-id', line.key);
+
+      const image = node.querySelector('img') as HTMLImageElement;
+      image.src = line.image;
+      image.alt = line.name;
+
+      const name = node.querySelector('[data-line-name]') as HTMLAnchorElement;
+      name.textContent = line.name;
+      name.href = url(`/product/${line.slug}`);
+
+      const label = optionLabel(line.options);
+      const options = node.querySelector('[data-line-options]') as HTMLElement;
+      if (label) {
+        options.textContent = label;
+        options.hidden = false;
+      }
+
+      (node.querySelector('[data-line-qty]') as HTMLElement).textContent = toArabicDigits(line.quantity);
+      (node.querySelector('[data-line-price]') as HTMLElement).textContent = money(
+        line.price * line.quantity
+      );
+
+      const increase = node.querySelector('[data-line-inc]') as HTMLButtonElement;
+      increase.disabled = line.max !== null && line.quantity >= line.max;
+      increase.addEventListener('click', () => setQuantity(line.key, line.quantity + 1));
+
+      (node.querySelector('[data-line-dec]') as HTMLButtonElement).addEventListener('click', () =>
+        setQuantity(line.key, line.quantity - 1)
+      );
+      (node.querySelector('[data-line-remove]') as HTMLButtonElement).addEventListener('click', () =>
+        removeLine(line.key)
+      );
+
+      return node;
+    };
+
+    const render = (lines: CartLine[]) => {
+      list.replaceChildren(...lines.map(buildLine));
+      show(body, lines.length > 0);
+      show(empty, lines.length === 0);
+
+      const summary = totals(lines);
+      const shipping = shippingFor(summary.subtotal, FREE_SHIPPING_AT);
+
+      if (subtotalEl) subtotalEl.textContent = money(summary.subtotal);
+      if (shippingEl) shippingEl.textContent = shipping === 0 ? 'مجاني' : money(shipping);
+      if (totalEl) totalEl.textContent = money(summary.subtotal + shipping);
+
+      if (noteEl) {
+        noteEl.textContent =
+          summary.toFreeShipping === 0
+            ? 'التوصيل مجاني على هذا الطلب.'
+            : `أضف ${money(summary.toFreeShipping)} للحصول على توصيل مجاني.`;
+      }
+      if (progressEl) {
+        const share = Math.round((summary.subtotal / FREE_SHIPPING_AT) * 100);
+        progressEl.style.width = `${Math.min(100, share)}%`;
+      }
+    };
+
+    /** Required fields, checked here so the shopper never leaves the page to learn this. */
+    const validate = (): boolean => {
+      let firstInvalid: HTMLElement | null = null;
+
+      ['name', 'phone', 'city', 'address'].forEach((field) => {
+        const input = form.querySelector<HTMLInputElement>(`[name="${field}"]`);
+        const error = form.querySelector<HTMLElement>(`[data-error-for="${field}"]`);
+        const value = input?.value.trim() ?? '';
+
+        const missing = value === '';
+        const badPhone = field === 'phone' && !missing && !/^0?5\d{8}$/.test(value.replace(/[\s-]/g, ''));
+        const problem = missing ? 'هذا الحقل مطلوب.' : badPhone ? 'أدخل رقم جوال صحيح.' : '';
+
+        if (error) {
+          error.textContent = problem;
+          error.classList.toggle('hidden', problem === '');
+        }
+        if (input) input.setAttribute('aria-invalid', String(problem !== ''));
+        if (problem && !firstInvalid) firstInvalid = input;
+      });
+
+      firstInvalid?.focus();
+      return firstInvalid === null;
+    };
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      if (!status) return;
+
+      status.textContent = '';
+      if (!validate()) {
+        status.textContent = 'راجع الحقول المعلَّمة.';
+        return;
+      }
+
+      submit.disabled = true;
+      status.textContent = 'جارٍ التحقق…';
+
+      const result = await beginCheckout(buildOrder());
+
+      if (result.status === 'redirect') {
+        location.assign(result.redirectTo);
+        return;
+      }
+
+      submit.disabled = false;
+      status.textContent =
+        result.status === 'unconfigured'
+          ? 'الدفع الآمن لم يُفعَّل بعد، وسلتك محفوظة.'
+          : 'تعذّر بدء الدفع. أعد المحاولة بعد قليل.';
+    });
+
+    subscribe(render);
+    render(readCart());
+  }
+</script>

@@ -6,18 +6,25 @@
  * replaces the storage calls, not the shape.
  *
  * A line is keyed by the product *and* the options chosen, so the same piece in
- * two colours is two lines rather than a muddled quantity.
+ * two colours is two lines rather than a muddled quantity. Options are stored
+ * as name/value pairs — that is what a checkout handoff needs, and the label
+ * shoppers read is derived from them.
  *
  * Every function touches localStorage inside a try/catch: private-mode Safari
  * throws on access, and a cart is never worth breaking the page for.
  */
 
+export interface CartOption {
+  name: string;
+  value: string;
+}
+
 export interface CartLineInput {
   id: number;
   slug: string;
   name: string;
-  /** Chosen values, e.g. "أسود · وسط". */
-  options?: string;
+  /** Chosen values, in the order the product page asks for them. */
+  options?: CartOption[];
   price: number;
   image: string;
   /** Last known stock; null means the store does not track it. */
@@ -42,7 +49,18 @@ export const FREE_SHIPPING_AT = 500;
 type Listener = (lines: CartLine[]) => void;
 const listeners = new Set<Listener>();
 
-export const lineKey = (id: number, options?: string): string => `${id}::${options ?? ''}`;
+export const lineKey = (id: number, options?: CartOption[]): string =>
+  `${id}::${(options ?? []).map((option) => `${option.name}=${option.value}`).join('|')}`;
+
+/** What the shopper reads on a line: the values, not the field names. */
+export const optionLabel = (options?: CartOption[]): string =>
+  (options ?? []).map((option) => option.value).join(' · ');
+
+const isOption = (value: unknown): value is CartOption =>
+  typeof value === 'object' &&
+  value !== null &&
+  typeof (value as CartOption).name === 'string' &&
+  typeof (value as CartOption).value === 'string';
 
 const isLine = (value: unknown): value is CartLineInput & { quantity: number } => {
   if (typeof value !== 'object' || value === null) return false;
@@ -54,7 +72,8 @@ const isLine = (value: unknown): value is CartLineInput & { quantity: number } =
     typeof line.price === 'number' &&
     typeof line.image === 'string' &&
     typeof line.quantity === 'number' &&
-    (line.max === null || typeof line.max === 'number')
+    (line.max === null || typeof line.max === 'number') &&
+    (line.options === undefined || (Array.isArray(line.options) && line.options.every(isOption)))
   );
 };
 
@@ -70,11 +89,10 @@ export const readCart = (): CartLine[] => {
     if (!raw) return [];
     const parsed: unknown = JSON.parse(raw);
     if (!Array.isArray(parsed)) return [];
-    return parsed.filter(isLine).map((line) => ({
-      ...line,
-      options: line.options ?? undefined,
-      key: line.key ?? lineKey(line.id, line.options),
-    }));
+    return parsed.filter(isLine).map((line) => {
+      const options = line.options?.length ? line.options : undefined;
+      return { ...line, options, key: lineKey(line.id, options) };
+    });
   } catch {
     return [];
   }
@@ -98,13 +116,14 @@ export const subscribe = (listener: Listener): (() => void) => {
 
 export const addLine = (line: CartLineInput, quantity = 1): CartLine[] => {
   const lines = readCart();
-  const key = lineKey(line.id, line.options);
+  const options = line.options?.length ? line.options : undefined;
+  const key = lineKey(line.id, options);
   const existing = lines.find((item) => item.key === key);
 
   if (existing) {
     existing.quantity = clampQuantity(existing.quantity + quantity, existing.max);
   } else {
-    lines.push({ ...line, key, quantity: clampQuantity(quantity, line.max) });
+    lines.push({ ...line, options, key, quantity: clampQuantity(quantity, line.max) });
   }
   return writeCart(lines);
 };

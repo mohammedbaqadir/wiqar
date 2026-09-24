@@ -193,6 +193,7 @@ const schema = productSchema(product, {
                         value={value.label}
                         checked={valueIndex === 0}
                         data-option
+                        data-option-name={option.name}
                         class="peer sr-only"
                       />
                       <span class="inline-flex min-h-11 items-center gap-2 border border-hairline px-3 text-sm text-room-ink-2 transition-colors peer-checked:border-outline peer-checked:text-room-ink peer-focus-visible:ring-2 peer-focus-visible:ring-outline/40">
@@ -226,7 +227,7 @@ const schema = productSchema(product, {
                     name="quantity"
                     value="1"
                     min="1"
-                    class="w-14 border-0 bg-transparent p-0 text-center font-data text-sm text-ink"
+                    class="wq-field-bare w-14 p-0 text-center font-data text-sm text-ink"
                   />
                 </label>
                 <Button
