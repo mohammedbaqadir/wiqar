@@ -84,19 +84,19 @@ for (const product of products) {
               />
 
               {gone && (
-                <span class="absolute start-3 top-3 bg-ink px-2 py-0.5 font-data text-[0.6rem] text-exhibit">
+                <span class="absolute start-3 top-3 bg-ink px-2 py-0.5 font-data text-[0.7rem] text-exhibit">
                   نفدت
                 </span>
               )}
 
               {isLowStock(product) && (
-                <span class="absolute start-3 top-3 bg-signal px-2 py-0.5 font-data text-[0.6rem] text-exhibit">
+                <span class="absolute start-3 top-3 bg-signal px-2 py-0.5 font-data text-[0.7rem] text-exhibit">
                   {lowStockLabel(product)}
                 </span>
               )}
 
               {isOnSale(product) && (
-                <span class="absolute end-3 top-3 bg-ink px-2 py-0.5 font-data text-[0.6rem] text-exhibit">
+                <span class="absolute end-3 top-3 bg-ink px-2 py-0.5 font-data text-[0.7rem] text-exhibit">
                   عرض
                 </span>
               )}

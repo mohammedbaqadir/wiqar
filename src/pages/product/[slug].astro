@@ -65,7 +65,7 @@ const schema = productSchema(product, {
 
   <main id="main">
     <nav
-      class="mx-auto flex max-w-6xl items-center gap-2 px-5 pt-6 font-data text-[0.72rem] text-room-ink-3 lg:px-8"
+      class="mx-auto flex max-w-6xl items-center gap-2 px-5 pt-6 font-data text-[0.75rem] text-room-ink-3 lg:px-8"
       aria-label="المسار"
     >
       <a href={url('/')} class="transition-colors hover:text-room-ink">وقار</a>
@@ -100,7 +100,7 @@ const schema = productSchema(product, {
 
           {
             gone && (
-              <span class="absolute start-4 top-4 bg-ink px-2.5 py-1 font-data text-[0.65rem] text-exhibit">
+              <span class="absolute start-4 top-4 bg-ink px-2.5 py-1 font-data text-[0.7rem] text-exhibit">
                 نفدت الكمية
               </span>
             )
@@ -108,7 +108,7 @@ const schema = productSchema(product, {
 
           {
             !gone && isLowStock(product) && (
-              <span class="absolute start-4 top-4 bg-signal px-2.5 py-1 font-data text-[0.65rem] text-exhibit">
+              <span class="absolute start-4 top-4 bg-signal px-2.5 py-1 font-data text-[0.7rem] text-exhibit">
                 {lowStockLabel(product)}
               </span>
             )
@@ -146,7 +146,7 @@ const schema = productSchema(product, {
 
       <div class="space-y-7">
         <div class="space-y-4 border-b border-hairline pb-6">
-          <div class="flex flex-wrap items-center gap-3 font-data text-[0.72rem] text-room-ink-3">
+          <div class="flex flex-wrap items-center gap-3 font-data text-[0.75rem] text-room-ink-3">
             <span dir="ltr">{product.sku}</span>
             {category && <span aria-hidden="true">·</span>}
             {category && <a href={url(`/category/${category.slug}`)} class="transition-colors hover:text-room-ink">{category.name}</a>}
