@@ -9,8 +9,9 @@ import { getProducts } from '@/lib/api';
 import { shareImage } from '@/lib/images';
 
 const products = await getProducts();
-const lead = products[0];
-const featured = products.slice(1, 9);
+/** The vitrine piece is designated in the catalogue, not by array order. */
+const lead = products.find((product) => product.featured) ?? products[0];
+const featured = products.filter((product) => product.id !== lead.id).slice(0, 8);
 const share = await shareImage(lead.image.url);
 
 const promises = [
@@ -44,7 +45,7 @@ const promises = [
             {
               promises.map((promise) => (
                 <div class="space-y-2 border-t border-hairline pt-4">
-                  <dt class="font-data text-[0.7rem] tracking-[0.12em] text-accent-d">
+                  <dt class="text-[0.7rem] text-accent-d">
                     {promise.term}
                   </dt>
                   <dd class="text-sm leading-relaxed text-room-ink-2">{promise.note}</dd>

@@ -47,8 +47,8 @@ for (const product of products) {
       products.map((product) => {
         const room = roomOf(product.category_id);
         const gone = isOutOfStock(product);
-        /** Some pieces were photographed twice; the second view is for hover. */
-        const second = product.images[1];
+        /** Pieces with choices cannot be quick-added: the shopper must choose. */
+        const needsChoosing = product.options.length > 0;
 
         return (
           <div
@@ -80,23 +80,10 @@ for (const product of products) {
                 sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 300px"
                 widths={[240, 360, 480]}
                 class:list={[
-                  'size-full object-cover transition-transform duration-[900ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.03]',
+                  'size-full object-cover transition-[transform,opacity] duration-[900ms] ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none group-hover:scale-[1.05]',
                   gone && 'opacity-55',
                 ]}
               />
-
-              {/* The other view of the piece, revealed on hover — the way the shops
-                  this store belongs beside show you the second photograph. */}
-              {second && !gone && (
-                <ProductPhoto
-                  path={second.url}
-                  alt=""
-                  sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 300px"
-                  widths={[240, 360, 480]}
-                  data-hover-photo
-                  class="absolute inset-0 size-full object-cover opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100"
-                />
-              )}
 
               {gone && (
                 <span class="absolute start-3 top-3 bg-ink px-2 py-0.5 font-data text-[0.7rem] text-exhibit">
@@ -116,8 +103,9 @@ for (const product of products) {
                 </span>
               )}
 
-              {/* Pointer users get quick add; the product page remains the way in. */}
-              {!gone && (
+              {/* Pointer users get quick add — but never past a choice they have to
+                  make. With options, the product page is the honest path. */}
+              {!gone && !needsChoosing && (
                 <button
                   type="button"
                   data-add-to-cart
@@ -134,17 +122,33 @@ for (const product of products) {
                   أضف إلى السلة
                 </button>
               )}
+
+              {!gone && needsChoosing && (
+                <a
+                  href={url(`/product/${product.slug}`)}
+                  data-quick-add
+                  class="absolute inset-x-3 bottom-3 z-10 min-h-11 items-center justify-center bg-ink/90 px-3 text-sm text-exhibit transition-opacity hover:bg-ink"
+                >
+                  اختر {product.options[0].name}
+                </a>
+              )}
             </div>
 
             <div class="mt-3 flex items-start justify-between gap-3">
-              <h3 class="min-w-0 truncate text-[0.95rem] text-room-ink">
-                <a
-                  href={url(`/product/${product.slug}`)}
-                  class="transition-colors after:absolute after:inset-0 after:content-[''] group-hover:text-accent-d group-hover:underline group-hover:decoration-accent group-hover:decoration-2 group-hover:underline-offset-4"
-                >
-                  {product.name}
-                </a>
-              </h3>
+              <div class="min-w-0">
+                <h3 class="truncate text-[0.95rem] text-room-ink">
+                  <a
+                    href={url(`/product/${product.slug}`)}
+                    class="transition-colors after:absolute after:inset-0 after:content-[''] group-hover:text-accent-d group-hover:underline group-hover:decoration-accent group-hover:decoration-2 group-hover:underline-offset-4"
+                  >
+                    {product.name}
+                  </a>
+                </h3>
+                {/* What the piece is made of — the line that justifies it. */}
+                <p class="mt-0.5 truncate font-reading text-[0.85rem] leading-relaxed text-room-ink-3">
+                  {product.origin}
+                </p>
+              </div>
 
               <div class="shrink-0 text-end">
                 {isOnSale(product) ? (

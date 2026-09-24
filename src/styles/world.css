@@ -13,7 +13,9 @@
   --wq-font-display: 'Naseeb', 'Reem Kufi', 'IBM Plex Sans Arabic', sans-serif;
   --wq-font-reading: 'Amiri', 'IBM Plex Sans Arabic', serif;
   --wq-font-ui: 'IBM Plex Sans Arabic', system-ui, sans-serif;
-  --wq-font-data: 'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace;
+  /* Mono carries the numbers. Arabic-Indic digits have no mono glyphs, so they
+     fall to Plex Arabic on purpose rather than to whatever the system offers. */
+  --wq-font-data: 'IBM Plex Mono', 'IBM Plex Sans Arabic', ui-monospace, SFMono-Regular, monospace;
 
   /* Starwind contract → the world */
   --background: var(--wq-room);
@@ -175,20 +177,10 @@ html[data-filtering] [data-client-filter] {
   display: none;
 }
 
-/* The second photograph is a hover affordance: on touch devices it would cost
-   bytes for something that can never show. */
-[data-hover-photo] {
-  display: none;
-}
-
 @media (pointer: fine) {
   [data-quick-add] {
     display: flex;
     opacity: 0;
-  }
-
-  [data-hover-photo] {
-    display: block;
   }
 
   [data-product-card]:hover [data-quick-add],

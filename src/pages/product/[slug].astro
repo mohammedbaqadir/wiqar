@@ -153,7 +153,7 @@ const schema = productSchema(product, {
             <span dir="ltr">{product.sku}</span>
             {category && <span aria-hidden="true">·</span>}
             {category && <a href={url(`/category/${category.slug}`)} class="transition-colors hover:text-room-ink">{category.name}</a>}
-            <span class="ms-auto" dir="ltr">{product.origin}</span>
+            <span class="ms-auto">{product.origin}</span>
           </div>
 
           <h1 class="font-display text-4xl leading-tight text-room-ink lg:text-5xl">

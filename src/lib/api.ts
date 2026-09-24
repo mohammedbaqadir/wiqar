@@ -42,6 +42,8 @@ export interface ApiProduct {
   category_id: number;
   origin: string;
   standard: string;
+  /** The piece the vitrine leads with. */
+  featured?: boolean;
   /** Shopper-facing synonyms: the forms people type that the copy doesn't carry. */
   keywords: string[];
   /** ISO date, newest first when sorting by "الأحدث". */

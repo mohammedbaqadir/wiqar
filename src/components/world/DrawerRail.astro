@@ -1,6 +1,5 @@
 ---
 import { getCategories, getProducts } from '@/lib/api';
-import { toArabicDigits } from '@/lib/format';
 import { url } from '@/lib/url';
 
 const categories = await getCategories();
@@ -14,19 +13,15 @@ const rooms = categories
   .filter((room) => room.count > 0);
 ---
 
-<nav class="mx-auto max-w-6xl px-5 pb-10 lg:px-8" aria-label="أقسام المتجر">
-  <div class="flex flex-wrap border border-hairline">
+<nav class="mx-auto max-w-6xl px-5 pt-8 pb-10 lg:px-8" aria-label="أقسام المتجر">
+  <div class="flex flex-wrap border-x border-b border-hairline">
     {
-      rooms.map(({ category, count }) => (
+      rooms.map(({ category }) => (
         <a
           href={url(`/category/${category.slug}`)}
-          class="flex min-h-11 min-w-0 flex-auto items-center gap-2 border-hairline px-3.5 text-sm whitespace-nowrap text-room-ink transition-colors hover:bg-room-2 [&+&]:border-s"
+          class="flex min-h-11 min-w-0 flex-auto items-center justify-center border-hairline px-4 text-sm whitespace-nowrap text-room-ink transition-colors hover:bg-room-2 [&+&]:border-s"
         >
-          <span class="h-0.5 w-5 bg-accent" aria-hidden="true" />
           <span class="font-medium">{category.name}</span>
-          <span class="ms-auto font-data text-[0.7rem] text-room-ink-3" dir="ltr">
-            {toArabicDigits(count)}
-          </span>
         </a>
       ))
     }
