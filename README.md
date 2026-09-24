@@ -1,43 +1,49 @@
-# Astro Starter Kit: Minimal
+# وقار — Wiqar
 
-```sh
-bun create astro@latest -- --template minimal
+A curated goods store — ceramics, writing, textiles, leather, optics, audio, light, tools.
+Arabic-first (RTL), statically built with Astro.
+
+**Live:** https://mohammedbaqadir.github.io/wiqar/
+
+## Stack
+
+- **Astro** (static output) + **TypeScript**; **Bun** for install, build and run
+- **Tailwind CSS v4** + **Starwind UI** components
+- Self-hosted Arabic typefaces: Naseeb, Amiri, IBM Plex Arabic / Mono
+- `@astrojs/sitemap`, photos optimised to AVIF + WebP at build time
+
+## Structure
+
+```
+src/pages/       routes: home, catalog, category/[slug], product/[slug], search, 404
+src/layouts/     Base.astro — theme vars, meta/OG, skip link, cart, image fade-in
+src/components/  world/ (the store's own parts) · starwind/ (vendored UI)
+src/lib/         api · cart · search · images · schema · format · url
+src/data/        catalog.json (API-shaped) · theme.ts (the one palette)
+src/assets/      photos (optimised at build) · fonts
+src/styles/      world.css (tokens & base) · world-fonts.css · starwind.css
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## How the data flows
 
-## 🚀 Project Structure
+`src/data/catalog.json` → `src/lib/api.ts` → pages, at build time. Nothing else reads the
+catalogue: swapping the mock for a real backend means rewriting `api.ts` and nothing else.
 
-Inside of your Astro project, you'll see the following folders and files:
+Cart, search suggestions, sorting, the gallery and product options run client-side as five
+small plain-TypeScript scripts — no UI framework.
 
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
+## Commands
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+| | |
+|---|---|
+| `bun install` | install dependencies |
+| `bun run dev` | dev server (see `AGENTS.md` for background mode) |
+| `bun run build` | build to `dist/` |
+| `bun run preview` | serve the build locally |
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+## Deploy
 
-Any static assets, like images, can be placed in the `public/` directory.
+Push to `main` — GitHub Actions builds and publishes to GitHub Pages (`wiqar`).
 
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `bun install`             | Installs dependencies                            |
-| `bun dev`             | Starts local dev server at `localhost:4321`      |
-| `bun build`           | Build your production site to `./dist/`          |
-| `bun preview`         | Preview your build locally, before deploying     |
-| `bun astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `bun astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+Product photos are placeholders from royalty-free stock; sources are listed in
+`src/assets/photos/CREDITS.txt` and each is replaced by real product photography.

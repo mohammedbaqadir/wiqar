@@ -6,7 +6,7 @@ import tailwindcss from '@tailwindcss/vite';
 // https://astro.build/config
 export default defineConfig({
   site: 'https://mohammedbaqadir.github.io',
-  base: '/wiqar-showcase',
+  base: '/wiqar',
   integrations: [sitemap()],
   vite: {
     plugins: [tailwindcss()],
