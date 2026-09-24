@@ -1,0 +1,105 @@
+---
+import Base from '@/layouts/Base.astro';
+import SiteHeader from '@/components/world/SiteHeader.astro';
+import SiteFooter from '@/components/world/SiteFooter.astro';
+import { url } from '@/lib/url';
+
+const sections = [
+  {
+    id: 'shipping',
+    title: 'الشحن والتوصيل',
+    points: [
+      'التوصيل مجاني للطلبات فوق ٥٠٠ ر.س، وما دون ذلك يُحسب عند الدفع.',
+      'نجهّز الطلب خلال يومي عمل، ويصل داخل المملكة عادةً في ٢–٥ أيام.',
+      'الدفع عند الاستلام متاح.',
+    ],
+  },
+  {
+    id: 'returns',
+    title: 'الإرجاع والاستبدال',
+    points: [
+      'الإرجاع خلال ١٤ يومًا من الاستلام، بشرط أن تكون القطعة كما وصلت.',
+      'الاستبدال متاح إذا وصلت القطعة مخالفة لوصفها.',
+      'تُعاد قيمة القطعة كاملة، ويتحمّل الطرف الذي أخطأ كلفة الشحن.',
+    ],
+  },
+  {
+    id: 'payment',
+    title: 'الدفع والأسعار',
+    points: [
+      'الأسعار بالريال السعودي وتشمل ضريبة القيمة المضافة.',
+      'لا يُخصم أي مبلغ قبل تأكيد الطلب.',
+    ],
+  },
+];
+
+const contact = {
+  id: 'contact',
+  title: 'تواصل معنا',
+  points: [
+    'البريد: support@wiqar.sa',
+    'الجوال وواتساب: ‎+966 53 686 2097',
+    'خدمة العملاء من ٩ صباحًا إلى ٩ مساءً.',
+  ],
+};
+---
+
+<Base
+  title="الخدمة — وقار"
+  description="الشحن والتوصيل، الإرجاع والاستبدال، الدفع، وتواصل معنا في متجر وقار."
+>
+  <SiteHeader />
+
+  <main id="main" class="mx-auto max-w-3xl px-5 py-12 lg:px-8 lg:py-16">
+    <header class="border-b border-hairline pb-8">
+      <p class="font-data text-[0.75rem] tracking-[0.18em] text-accent-d">الخدمة</p>
+      <h1 class="mt-2 font-display text-4xl leading-tight text-room-ink lg:text-5xl">
+        كل ما يخصّ الطلب
+      </h1>
+      <p class="mt-4 font-reading text-lg leading-loose text-room-ink-2">
+        الشروط كما نعمل بها فعلًا: بلا بنود مخفية، وبلا استثناءات تُكتشف بعد الشراء.
+      </p>
+    </header>
+
+    <nav class="flex flex-wrap gap-2 border-b border-hairline py-5" aria-label="أقسام الخدمة">
+      {
+        [...sections, contact].map((section) => (
+          <a
+            href={`#${section.id}`}
+            class="inline-flex min-h-11 items-center border border-hairline px-3.5 text-sm text-room-ink-2 transition-colors hover:border-outline hover:text-room-ink"
+          >
+            {section.title}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="divide-y divide-hairline">
+      {
+        [...sections, contact].map((section) => (
+          <section id={section.id} class="scroll-mt-24 py-10">
+            <h2 class="font-display text-2xl text-room-ink">{section.title}</h2>
+            <ul class="mt-4 space-y-3">
+              {section.points.map((point) => (
+                <li class="flex gap-3 font-reading text-lg leading-loose text-room-ink-2">
+                  <span aria-hidden="true" class="mt-3 h-px w-5 shrink-0 bg-accent" />
+                  <span>{point}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))
+      }
+    </div>
+
+    <p class="border-t border-hairline pt-8 font-reading text-lg leading-loose text-room-ink-2">
+      لم تجد ما تبحث عنه؟ <a
+        href={url('/catalog')}
+        class="text-room-ink underline decoration-hairline underline-offset-4 transition-colors hover:decoration-accent"
+        >تصفّح المقتنيات</a
+      >، أو اكتب لنا على البريد أعلاه وسنجيبك بأنفسنا.
+    </p>
+  </main>
+
+  <SiteFooter />
+</Base>

@@ -8,8 +8,15 @@ const links = [{ href: url('/catalog'), label: 'المقتنيات' }];
   <div
     class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-2 font-data text-[0.75rem] text-room-ink-3 lg:px-8"
   >
-    <span>توصيل مجاني للطلبات فوق ٥٠٠ ر.س</span>
-    <span class="hidden sm:inline">إرجاع خلال ١٤ يومًا · الدفع عند الاستلام متاح</span>
+    <a href={url('/service#shipping')} class="transition-colors hover:text-room-ink">
+      توصيل مجاني للطلبات فوق ٥٠٠ ر.س
+    </a>
+    <a
+      href={url('/service#returns')}
+      class="hidden transition-colors hover:text-room-ink sm:inline"
+    >
+      إرجاع خلال ١٤ يومًا · الدفع عند الاستلام متاح
+    </a>
   </div>
 </div>
 
