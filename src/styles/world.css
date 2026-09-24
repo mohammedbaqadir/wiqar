@@ -175,10 +175,20 @@ html[data-filtering] [data-client-filter] {
   display: none;
 }
 
+/* The second photograph is a hover affordance: on touch devices it would cost
+   bytes for something that can never show. */
+[data-hover-photo] {
+  display: none;
+}
+
 @media (pointer: fine) {
   [data-quick-add] {
     display: flex;
     opacity: 0;
+  }
+
+  [data-hover-photo] {
+    display: block;
   }
 
   [data-product-card]:hover [data-quick-add],

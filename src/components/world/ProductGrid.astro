@@ -47,6 +47,8 @@ for (const product of products) {
       products.map((product) => {
         const room = roomOf(product.category_id);
         const gone = isOutOfStock(product);
+        /** Some pieces were photographed twice; the second view is for hover. */
+        const second = product.images[1];
 
         return (
           <div
@@ -78,10 +80,23 @@ for (const product of products) {
                 sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 300px"
                 widths={[240, 360, 480]}
                 class:list={[
-                  'size-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]',
+                  'size-full object-cover transition-transform duration-[900ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.03]',
                   gone && 'opacity-55',
                 ]}
               />
+
+              {/* The other view of the piece, revealed on hover — the way the shops
+                  this store belongs beside show you the second photograph. */}
+              {second && !gone && (
+                <ProductPhoto
+                  path={second.url}
+                  alt=""
+                  sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 300px"
+                  widths={[240, 360, 480]}
+                  data-hover-photo
+                  class="absolute inset-0 size-full object-cover opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100"
+                />
+              )}
 
               {gone && (
                 <span class="absolute start-3 top-3 bg-ink px-2 py-0.5 font-data text-[0.7rem] text-exhibit">
@@ -96,7 +111,7 @@ for (const product of products) {
               )}
 
               {isOnSale(product) && (
-                <span class="absolute end-3 top-3 bg-ink px-2 py-0.5 font-data text-[0.7rem] text-exhibit">
+                <span class="absolute end-3 top-3 bg-ink px-2 py-0.5 text-[0.7rem] text-exhibit">
                   عرض
                 </span>
               )}

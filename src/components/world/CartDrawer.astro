@@ -14,7 +14,7 @@ import { url } from '@/lib/url';
     role="dialog"
     aria-modal="true"
     aria-label="سلة المشتريات"
-    class="absolute inset-y-0 end-0 flex w-full max-w-md flex-col bg-exhibit text-ink shadow-2xl"
+    class="absolute inset-y-0 end-0 flex w-full max-w-md flex-col bg-exhibit text-ink shadow-[0_28px_70px_-28px_rgba(17,17,16,0.5)]"
   >
     <header class="flex items-center justify-between gap-4 border-b border-hairline-ink px-5 py-4">
       <h2 class="font-display text-xl">
@@ -120,7 +120,7 @@ import { url } from '@/lib/url';
         <button
           type="button"
           data-line-remove
-          class="-me-1 inline-flex min-h-11 shrink-0 items-center px-1.5 font-data text-[0.7rem] text-ink-3 transition-colors hover:text-signal"
+          class="-me-1 inline-flex min-h-11 shrink-0 items-center px-1.5 text-[0.7rem] text-ink-3 transition-colors hover:text-signal"
         >
           إزالة
         </button>
@@ -154,6 +154,7 @@ import { url } from '@/lib/url';
 <script>
   import {
     addLine,
+    lineKey,
     optionLabel,
     readCart,
     removeLine,
@@ -194,6 +195,10 @@ import { url } from '@/lib/url';
     /** A re-render replaces every row, so remember where the focus was. */
     let pendingFocus: { key: string; action: 'inc' | 'dec' | 'remove' } | null = null;
     let lastFocused: HTMLElement | null = null;
+    /** The first render is not a change: nothing ticks on page load. */
+    let firstRender = true;
+    let shownCount = 0;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     const setShown = (element: HTMLElement, shown: boolean) => {
       if (shown) element.setAttribute('data-show', '');
@@ -274,9 +279,21 @@ import { url } from '@/lib/url';
 
       if (drawerCount) drawerCount.textContent = hasItems ? `(${toArabicDigits(summary.count)})` : '';
 
+      const grew = !firstRender && summary.count > shownCount;
+      shownCount = summary.count;
+      firstRender = false;
+
       countEls.forEach((element) => {
         element.textContent = toArabicDigits(summary.count);
         element.hidden = summary.count === 0;
+
+        /* One quiet tick when something is added, nothing on the way out. */
+        if (grew && !reduceMotion) {
+          element.animate(
+            [{ transform: 'scale(1)' }, { transform: 'scale(1.4)' }, { transform: 'scale(1)' }],
+            { duration: 320, easing: 'cubic-bezier(0.16, 1, 0.3, 1)' }
+          );
+        }
       });
 
       subtotalEl.textContent = money(summary.subtotal);
@@ -354,6 +371,7 @@ import { url } from '@/lib/url';
           .map((input) => ({ name: input.dataset.optionName ?? '', value: input.value }))
           .filter((option) => option.name !== '' && option.value !== '');
         const name = data.productName ?? '';
+        const key = lineKey(Number(data.productId), chosen.length > 0 ? chosen : undefined);
 
         addLine(
           {
@@ -370,6 +388,16 @@ import { url } from '@/lib/url';
 
         if (announceEl) announceEl.textContent = `أُضيف ${name} إلى السلة.`;
         open();
+
+        /* Mark the line that just arrived, so the eye finds it in the drawer. */
+        if (!reduceMotion) {
+          list
+            .querySelector<HTMLElement>(`[data-line-id="${CSS.escape(key)}"]`)
+            ?.animate(
+              [{ backgroundColor: 'rgba(176, 141, 87, 0.18)' }, { backgroundColor: 'transparent' }],
+              { duration: 900, easing: 'ease-out' }
+            );
+        }
       });
     });
 
