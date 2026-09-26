@@ -47,3 +47,11 @@ Push to `main` — GitHub Actions builds and publishes to GitHub Pages (`wiqar`)
 
 Product photos are placeholders from royalty-free stock; sources are listed in
 `src/assets/photos/CREDITS.txt` and each is replaced by real product photography.
+
+## Related projects
+
+Two siblings, each in its own repository. Neither is required for this one to build or run:
+
+- **`wiqar-theme`** — the parked Salla Twilight theme: the same world, expressed in Twig.
+- **`wiqar-backend`** — the runtime that talks to Salla (catalogue, cart, checkout, token) for the
+  day this storefront goes headless. `src/lib/api.ts` is the seam it plugs into.

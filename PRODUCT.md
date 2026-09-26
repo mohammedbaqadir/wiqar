@@ -50,8 +50,11 @@ carries it.
   `src/assets/photos/CREDITS.txt`. They must never be presented as the shop's own photography,
   and a second image is never shown as another view of the same object unless it truly is one.
 - No accounts, wishlist or reviews exist.
-- Undecided: hosting for the Salla integration (one serverless function vs SSR); the Salla app
-  record (needs an email address).
+- The Salla runtime is deliberately **its own project** (`wiqar-backend`, a Cloudflare Worker) so
+  this storefront never depends on it structurally. The seam is `src/lib/api.ts`; if that project
+  is abandoned, nothing here has to change.
+- Still needed for real data and checkout: the Salla app record (an email address) and the app's
+  access token.
 
 ## Brand Commitments
 
